@@ -55,10 +55,12 @@ public class Receiver {
 		try{
 			//infinite loop to receive packets. Only terminated if no packets arrive for a certain specified time
 			//e.g. if a connection problem occurs or no more packets are sent by the Sender.
+			socket.receive(packet);
+			packetCount++;
 			beforeTime = System.currentTimeMillis();
 			while(true){
 				socket.receive(packet);
-				afterTime += System.currentTimeMillis();
+				afterTime = System.currentTimeMillis();
 				packetCount++;
 			}
 		//if the socket-timeout is reached the thrown SocketTimeoutException is caught here. Number of received

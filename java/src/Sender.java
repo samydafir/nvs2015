@@ -24,14 +24,13 @@ public class Sender {
  	 * 	args[3,4,5,...] number of packets to send in each step
 	 */
 	public static void main(String[] args){
-		if(args.length < 3 || args.length != 3 + Integer.parseInt(args[2])){
+		if(args.length != 3){
 			System.out.println("Usage: java Sender <receiver name> <port> <number of packets to send>");
 		}else{
 			try{
 				startSending(args);
 			}catch(IOException e){
 				System.err.println("issue creating socket");
-
 			}
 		}
 	}
@@ -57,7 +56,7 @@ public class Sender {
 		//formatted to fill 4 bytes (fill with zeros). Create byte-array from string, receiver-info to generate packet and
 		//send the packet using the datagram socket.
 		for(int i = 0; i < sendAmt; i++){
-			String message = String.format("%04d", i) + ": Packet Received";
+			String message = i + ": Packet Received";
 			buffer = message.getBytes();
 			DatagramPacket packet = new DatagramPacket(buffer, buffer.length, address, receiverSocket);
 			socket.send(packet);
