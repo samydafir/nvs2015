@@ -53,7 +53,7 @@ int main(int argc, char *argv[]){
     //enter while loop and receive packets from the socket and save them into the buffer
     
     rec_cnt = 0;
-    if((recvfrom(sock,buffer,total_pack_size,0,(struct sockaddr*)&sender,&sockaddr_len)) >= 0){
+    if((recvfrom(sock,buffer,total_pack_size,0,(struct sockaddr*)&sender,&sockaddr_len)) >= 0)
         rec_cnt++;        
     }
     gettimeofday(&before, NULL);
