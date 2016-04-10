@@ -24,8 +24,8 @@ public class Sender {
  	 * 	args[3,4,5,...] number of packets to send in each step
 	 */
 	public static void main(String[] args){
-		if(args.length != 3){
-			System.out.println("Usage: java Sender <receiver name> <port> <number of packets to send>");
+		if(args.length != 5){
+			System.out.println("Usage: java Sender <receiver name> <port> <number of packets to send> <blocks to send continuously>");
 		}else{
 			try{
 				startSending(args);
@@ -44,23 +44,57 @@ public class Sender {
 	 * @throws IOException exception is forwarded to be handled by calling method
 	 */
 	private static void startSending(String[] args) throws IOException{
+        long beforeTime = 0;
+        long afterTime = 0;
+        
+		int blockSize = Integer.parseInt(args[3]);
 		//create socket with standard constructor. Sender-port does not have to be known.
 		DatagramSocket socket = new DatagramSocket();
 		//transform the cmd-argument receiver-name into an InetAddress object.
 		InetAddress address = InetAddress.getByName(args[0]);
 		int receiverSocket = Integer.parseInt(args[1]);
 		byte[] buffer = new byte[30];
-		
+		//DatagramPacket checkPacket = new DatagramPacket(buffer, buffer.length);
+		int size = Integer.parseInt(args[4]);
+		String payload = getPayload(size);
+		System.out.println(payload.length());
 		int sendAmt = Integer.parseInt(args[2]);
 		//the inner for-loop handles sending of packets in each step. creates a string-message including the packet-number
 		//formatted to fill 4 bytes (fill with zeros). Create byte-array from string, receiver-info to generate packet and
 		//send the packet using the datagram socket.
+		
+		beforeTime = System.currentTimeMillis();
 		for(int i = 0; i < sendAmt; i++){
-			String message = i + ": Packet Received";
+			String message = i + " "+ payload;
 			buffer = message.getBytes();
 			DatagramPacket packet = new DatagramPacket(buffer, buffer.length, address, receiverSocket);
 			socket.send(packet);
 		}
+		afterTime = System.currentTimeMillis();
 		socket.close();
+		//+5 for header size
+		evaluate(afterTime, beforeTime, size+5, sendAmt);
 	}
+	
+	private static String getPayload(int length){
+		StringBuilder sb = new StringBuilder();
+		for(int i = 0; i < length; i++){
+			sb.append("a");
+		}
+		return sb.toString();
+		
+	}
+	
+	private static void evaluate(long after, long before, int size, int amnt){
+		long duration = after - before;
+		int totalSize = size * amnt;
+		double speed = (double)(totalSize)/(double)(duration);
+		System.out.println(String.format("%.2f KB/s", speed));
+		
+		
+		
+	}
+	
+	
 }
+

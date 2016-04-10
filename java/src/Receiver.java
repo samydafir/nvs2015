@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.SocketTimeoutException;
 
 /**
@@ -12,8 +13,8 @@ import java.net.SocketTimeoutException;
  */
 public class Receiver {
     
-	//MAXSIZE 512 due to 512 being the maximum size of a UDP-packet.
-    private final static int MAXSIZE = 512;
+	//setting MAXSIZE to 100
+    private final static int SIZE = 2048;
     /**
      * main handles wrong numbers of cmd-arguments. Wrong numbers lead to a message describing usage being
      * issued, otherwise receive() is called. IOExceptions thrown in the receive-method are handled here.
@@ -22,8 +23,8 @@ public class Receiver {
      * 	args[1] timeout for the receiving socket
      */
 	public static void main(String[] args){
-		if(args.length != 2){
-			System.out.println("Usage: java Receiver <port number> <receiving timeout in ms>");
+		if(args.length != 3){
+			System.out.println("Usage: java Receiver <port number> <receiving timeout in ms> <expected packet amount> <packet paload-size>");
 		}else{
 			try{
 				receive(args);
@@ -42,9 +43,8 @@ public class Receiver {
 	private static void receive(String[] args)throws IOException{
         long beforeTime = 0;
         long afterTime = 0;
-        
 		//buffer to hold the received message represented as byte-array
-		byte[] buffer = new byte[MAXSIZE];
+		byte[] buffer = new byte[SIZE];
 		//create socket with port-number specified in args[0].
 		DatagramSocket socket = new DatagramSocket(Integer.parseInt(args[0]));
 		//set socket-timeout to terminate following loop, if no more packets received
@@ -52,13 +52,18 @@ public class Receiver {
 		//create datagram-packet with previously defined buffer. Received packets will be saved in this variable
 		DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
 		int packetCount = 0;
+		int senPort;
+		int recAmt = Integer.parseInt(args[2]);
+		InetAddress senAddr;
 		try{
 			//infinite loop to receive packets. Only terminated if no packets arrive for a certain specified time
 			//e.g. if a connection problem occurs or no more packets are sent by the Sender.
 			socket.receive(packet);
+			senPort = packet.getPort();
+			senAddr = packet.getAddress();
 			packetCount++;
 			beforeTime = System.currentTimeMillis();
-			while(true){
+			while(packetCount < recAmt){
 				socket.receive(packet);
 				afterTime = System.currentTimeMillis();
 				packetCount++;
@@ -66,10 +71,26 @@ public class Receiver {
 		//if the socket-timeout is reached the thrown SocketTimeoutException is caught here. Number of received
 		//packets is printed.
 		}catch(SocketTimeoutException e){
-			System.out.println("Receiving of packets terminated");
-			System.out.println(packetCount + " packets received");
 		}
 		socket.close();
-		System.out.println(afterTime - beforeTime +"ms");
+		evaluate(afterTime, beforeTime, packet.getLength()-5, packetCount); 
+	}
+	
+	
+	
+	
+	
+	private static void evaluate(long after, long before, int size, int amnt){
+		System.out.println(size);
+		System.out.println(amnt + " packets received");
+		long duration = after - before;
+		int totalSize = size * amnt;
+		double speed = (double)(totalSize)/(double)(duration);
+		if(speed != Double.NaN){
+			System.out.println(String.format("%.2f KB/s", speed));
+		}else{
+			System.out.println("speed not calculatable");
+		}
+		
 	}
 }

@@ -15,16 +15,23 @@
 
 int main(int argc, char *argv[]){
 
-    //define required local vars
+    
+    //handle wrong number of cmd args
+    if(argc != 5){
+        handleError("Usage: ./sender <receiver name> <port> <number of packets to send> <message length>");
+    }
+
+    //declare required local vars
     int sock, amtSent, sent, step;
     struct sockaddr_in receiver;
     struct hostent *host;
+    struct timeval before, after;
+    int msgLength;
     char buffer[MAXSIZE];
+    char* msg;
+    int amtSend;
 
-    //handle wrong number of cmd args
-    if(argc != (4 + atoi(argv[3]))){
-        handleError("Usage: ./sender <receiver name> <port> <number of sending steps> <number of packages to send in each step>");
-    }
+    msgLength = atoi(argv[4]);
 
     //create udp ipv4 socket and handle creation error
     sock = socket(AF_INET, SOCK_DGRAM, 0);
@@ -41,26 +48,32 @@ int main(int argc, char *argv[]){
 
     //copy host address into sockaddr_in struct -> add to addr info and set port
     bcopy((char *)host->h_addr, (char *)&receiver.sin_addr, host->h_length);
-    receiver.sin_port = htons(atoi(argv[2]));
-    
-    
-    for(step = 4; step < argc; step++){
-        printf("sending %d packets...\n", atoi(argv[step]));
-        for(amtSent = 0; amtSent < atoi(argv[step]); amtSent++){
-            //zero out buffer
-            bzero(buffer, 512);
-            //set message to be sent
-            sprintf(buffer, "%04d: packet received", amtSent);
-            //send message in buffer as datagram and handle error
-            sent = sendto(sock, buffer, strlen(buffer), 0, (struct sockaddr *)&receiver, sizeof(struct sockaddr_in));
-            if(sent == 0){
-                handleError("package not sent successfully");
-            }
+    receiver.sin_port = htons(atoi(argv[2]));    
+    gettimeofday(&before, NULL);
+    for(amtSent = 0; amtSent < atoi(argv[3]); amtSent++){
+        //zero out buffer
+        bzero(buffer, MAXSIZE);
+        //set message to be sent
+        sprintf(buffer, "%d: %s", amtSent,msg);
+        //send message in buffer as datagram and handle error
+        sent = sendto(sock, buffer, strlen(buffer), 0, (struct sockaddr *)&receiver, sizeof(struct sockaddr_in));
+        if(sent == 0){
+            handleError("package not sent successfully");
         }
     }
-
+    gettimeofday(&after, NULL);
+    printf("%lums\n", (after.tv_usec - before.tv_usec)/1000 +(after.tv_sec - before.tv_sec)*1000);
+    
     return 0;
 }
+
+void evaluate(timeval before, timeval after, ){
+
+}
+
+char* createMsg(int length){
+    
+} 
 
 /*
 handleError takes a error message as pointer to a char sequence prints it and exits the application

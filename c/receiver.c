@@ -13,11 +13,16 @@
 
 int main(int argc, char *argv[]){
 
+
+    //handle wrong number of cmd args
+    if(argc != 4){
+        handleError("Usage: ./receiver <port> <timeout in s> <number of ecpected packets>");
+    }
     //requied local var declaration
     int sock, sockaddr_len, one, t_out, rec_cnt;
     struct sockaddr_in receiver, sender;
-    struct timeval timeout;
-    char buffer[MAXSIZE];   
+    struct timeval timeout, before, after;
+    char buffer[MAXSIZE];    
     char *b;
     bzero(&receiver, sizeof(receiver));
 
@@ -46,11 +51,18 @@ int main(int argc, char *argv[]){
     sockaddr_len = sizeof(struct sockaddr_in);
 
     //enter while loop and receive packets from the socket and save them into the buffer
+    
     rec_cnt = 0;
+    recvfrom(sock,buffer,MAXSIZE,0,(struct sockaddr*)&sender,&sockaddr_len);
+    gettimeofday(&before, NULL);
+    rec_cnt++;
     while(recvfrom(sock,buffer,MAXSIZE,0,(struct sockaddr*)&sender,&sockaddr_len) >= 0){
+        gettimeofday(&after, NULL);
         rec_cnt++;
     }
-    printf("%d packets received \n", rec_cnt);
+    printf("%d: packets received \n", rec_cnt);
+    printf("%lums\n", (after.tv_usec - before.tv_usec)/1000 +(after.tv_sec - before.tv_sec)*1000);
+    
     close(sock);
 }
 
@@ -58,6 +70,32 @@ void handle_error(char *message){
     puts(message);
     exit(1);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
