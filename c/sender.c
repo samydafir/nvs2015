@@ -15,34 +15,42 @@ int main(int argc, char *argv[]){
 
     
     //handle wrong number of cmd args
-    if(argc != 5){
-        handleError("Usage: ./sender <receiver name> <port> <number of packets to send> <message length>");
+    if(argc != 6){
+        handle_error("Usage: ./sender <receiver name> <port> <number of packets to send> <message length> <blocksize>");
     }
 
-    //declare required local vars
-    int sock, amt_sent, sent;
-    struct sockaddr_in receiver;
+    //declare and define required local vars
+    int sock, amt_sent, sent, total_pack_size, payload, wait_freq, sockaddr_len;
+    struct sockaddr_in receiver, sender;
     struct hostent *host;
-    struct timeval before, after;
-    int msgLength;
-    msgLength = atoi(argv[4]);
-    char buffer[msgLength + 6];
+    struct timeval before, after, timeout;
+    payload = atoi(argv[4]);
+    total_pack_size = payload + 5;
+    char buffer[total_pack_size];
     char* msg;
-    msg = createMsg(msgLength);
+    msg = createMsg(payload);
     int amt_send;
     amt_send = atoi(argv[3]);
+    wait_freq = atoi(argv[4]);
 
     //create udp ipv4 socket and handle creation error
     sock = socket(AF_INET, SOCK_DGRAM, 0);
     if(sock < 0){
-        handleError("socket could not be created");
+        handle_error("socket could not be created");
     }
     
     //set sender info: protocol and host and handle host creation error
     receiver.sin_family = AF_INET;
     host = gethostbyname(argv[1]);
     if(host == 0){
-        handleError("host not recognized");
+        handle_error("host not recognized");
+    }
+    
+    timeout.tv_sec = 0;
+    timeout.tv_usec = 1000;
+    sockaddr_len = sizeof(struct sockaddr_in);
+    if(setsockopt(sock,SOL_SOCKET,SO_RCVTIMEO,&timeout,sizeof(timeout)) < 0){
+        handle_error("could not set socket receive-timeout");
     }
 
     //copy host address into sockaddr_in struct -> add to addr info and set port
@@ -50,22 +58,33 @@ int main(int argc, char *argv[]){
     receiver.sin_port = htons(atoi(argv[2]));    
     gettimeofday(&before, NULL);
     for(amt_sent = 0; amt_sent < amt_send; amt_sent++){
+        if(amt_sent > 0 && amt_sent % wait_freq == 0){
+        printf("%d\n", amt_sent);
+            if(recvfrom(sock,buffer,1,0,(struct sockaddr*)&sender,&sockaddr_len) < 0){
+                amt_sent -= wait_freq;
+            }
+        }
         //zero out buffer
-        bzero(buffer, msgLength + 6);
+        bzero(buffer, total_pack_size);
         //set message to be sent
         sprintf(buffer, "%d %s", amt_sent,msg);
         //send message in buffer as datagram and handle error
         sent = sendto(sock, buffer, strlen(buffer), 0, (struct sockaddr *)&receiver, sizeof(struct sockaddr_in));
         if(sent == 0){
-            handleError("package not sent successfully");
+            handle_error("package not sent successfully");
         }
     }
     gettimeofday(&after, NULL);
-    evaluate(before,after,strlen(buffer),amt_send);
+    evaluate(before,after,payload,amt_send);
     free(msg);
     return 0;
 }
 
+/*
+evaluates the send-operation. calculates transfer-speed and prints it. takes only distinct packets
+into account: e.g. if we sent 1000 packets only recognizes 1000 packets as valid user information.
+packets sent more than one are only counted twice, thus making measurment objective and expressive
+*/
 void evaluate(struct timeval before, struct timeval after, int msg_size, int amt){
     time_t duration = (after.tv_usec - before.tv_usec)/1000 +(after.tv_sec - before.tv_sec)*1000;
     int total_size = msg_size * amt;
@@ -74,7 +93,10 @@ void evaluate(struct timeval before, struct timeval after, int msg_size, int amt
     printf("%.2f KB/s\n", speed);
 }
     
-
+/*
+creates a char array (string) of given length which we later use in all our
+messages to measure the message-size's impact on out transfer speed
+*/
 char* createMsg(int length){
     char *str = malloc(length);
     memset(str, 'a', length-1);
@@ -84,9 +106,9 @@ char* createMsg(int length){
 } 
 
 /*
-handleError takes a error message as pointer to a char sequence prints it and exits the application
+handle_error takes a error message as pointer to a char sequence prints it and exits the application
 */
-void handleError(char *message){
+void handle_error(char *message){
     puts(message);
     exit(1);
 
