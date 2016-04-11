@@ -15,7 +15,7 @@
 	\section{Aufgabe}
 	Erstellen zweier Programme, von denen eines als Sender, das andere als Empfänger agiert. Der Sender soll mittels UDP Pakete an den Empfänger senden. Dabei sollen die ersten vier Byte jeder Nachricht eine fortlaufende Nummer enthalten.
 
-	\section{Dokumentation und Reflexion (Java-Version)}
+	\section{Dokumentation (Java-Version)}
 	Dokumentation: siehe auch kommentierten Sourcecode
 	
 	\subsection{Funktion allgemein}
@@ -69,13 +69,13 @@
 	Nun muss die Nachricht in ein Paket gepackt werden. Dazu wird zuerst der String in ein Byte-Array konvertiert und danach mit diesem Array ein Paket erstellt. Anders als beim Empfänger müssen hier zusätzlich Empfänger-Adresse und -Port angegeben werden, da das Paket hier nicht nur als Empfänger dient. Weiters werden beim Senden keine Adresse und Port angegeben, sämtliche Information ist im Paket gespeichert. Das erstellte Paket kann nun unter der Verwendung von $socket.send()$ verschickt werden. Dieser Vorgang wird wiederholt, bis der in Schritte aufgeteilte Sendevorgang beendet ist und keine Pakete mehr gesendet werden müssen.
 	
 	
-	\section{Dokumentation und Reflexion (C-Version)}
+	\section{Dokumentation (C-Version)}
 	Dokumentation: siehe auch kommentierten Sourcecode
 	
 	\subsection{Funktion allgemein}
 	Aufgrund der in C nicht vorhandenen Objektorientierung gestaltet sich die Implementierung komplizierter als in Java. Anstatt praktischer vorhandener Klassen werden hier in Libraries vordefinierte Struct-Konstrukte in Zusammenhang mit Library-definierten Funktionen verwendet.
 	Im Sender müssen zuerst ein Socket und ein Adressen-Konstrukt, welches die Empfängerdaten enthält erstellt werden. Außerdem muss noch ein Character-Array erstellt werden, das die zu sendenden Nachrichten enthalten wird. Danach werden Nachrichten mit fortlaufender Nummer erstellt und im Buffer gespeichert un dann unter Angabe des Adressen-Konstrukts und des Sockets versendet zu werden.
-	Der Empfänger erstellt ebenfalls einen Socket und ein Adressen-Konstrukt, das unter anderem den die Port-Nummer enthält, auf der der Socket erstellt werden soll. Adresse und Socket sind hier 2 separate Objekte. Unter Verwendung von $bind$ werden dem Socket die im Adressen-Objekt gespeicherten Eigenschaften wie Port-Nummer zugewiesen. Danach können unter Verwendung von $revcfrom$ in einer Schleife viele Pakete empfangen werden. Um die "blocking"-Funktion $recvfrom$ wieder verlassen zu können, wird für den Socket ein Timeout gesetzt. Werden für die Dauer des Timeout keine Objekte empfangen, gibt $recvfrom$ einen Wert kleiner 0 zurück, die Schleife wird abgebrochen und der Empfangsvorgang ist beendet.
+	Der Empfänger erstellt ebenfalls einen Socket und ein Adressen-Konstrukt, das unter anderem den die Port-Nummer enthält, auf der der Socket erstellt werden soll. Adresse und Socket sind hier 2 separate Objekte. Unter Verwendung von $bind$ werden dem Socket die im Adressen-Objekt gespeicherten Eigenschaften wie Port-Nummer zugewiesen. Danach können unter Verwendung von $revcfrom$ in einer Schleife viele Pakete empfangen werden. Um die "blocking"-Funktion $recvfrom$ wieder verlassen zu können, wird die Schleife terminiert, sobald alle Pakete erhalten wurden. Da auch ein Fall auftreten kann, in dem nicht alle Pakete erhalten werden, wird für den Socket vorsichtshalber ein Timeout gesetzt.  Werden für die Dauer des Timeout keine Pakete empfangen, gibt $recvfrom$ einen Wert kleiner 0 zurück, die Schleife wird abgebrochen und der Empfangsvorgang ist beendet.
 	
 	\subsection{Sender}
 	Um UDP-Pakete zu senden, müssen folgende Schritte ausgeführt werden.
@@ -86,6 +86,8 @@
 	\end{itemize}
 	
 	\subsubsection{Socket erstellen}
+	
+	
 	
 	\subsubsection{$sockaddr\_in$ struct erstellen und Attribute festlegen}
 	
@@ -103,6 +105,16 @@
 		\item Socket mit Adressen-Objekt mittels $bind$ verbinden.
 		\item Mittels $recvfrom$ Pakete empfangen.
 	\end{itemize}
+	
+	
+	\section{Auswertung (Java-Version)}
+	
+	
+	
+	
+	
+	
+	\section{Auswertung (C-Version)}
 	
 	
 	

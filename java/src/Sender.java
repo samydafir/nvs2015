@@ -24,8 +24,8 @@ public class Sender {
  	 * 	args[3,4,5,...] number of packets to send in each step
 	 */
 	public static void main(String[] args){
-		if(args.length != 5){
-			System.out.println("Usage: java Sender <receiver name> <port> <number of packets to send> <blocks to send continuously>");
+		if(args.length != 4){
+			System.out.println("Usage: java Sender <receiver name> <port> <number of packets to send> <payload size>");
 		}else{
 			try{
 				startSending(args);
@@ -47,7 +47,6 @@ public class Sender {
         long beforeTime = 0;
         long afterTime = 0;
         
-		int blockSize = Integer.parseInt(args[3]);
 		//create socket with standard constructor. Sender-port does not have to be known.
 		DatagramSocket socket = new DatagramSocket();
 		//transform the cmd-argument receiver-name into an InetAddress object.
@@ -55,7 +54,7 @@ public class Sender {
 		int receiverSocket = Integer.parseInt(args[1]);
 		byte[] buffer = new byte[30];
 		//DatagramPacket checkPacket = new DatagramPacket(buffer, buffer.length);
-		int size = Integer.parseInt(args[4]);
+		int size = Integer.parseInt(args[3]);
 		String payload = getPayload(size);
 		System.out.println(payload.length());
 		int sendAmt = Integer.parseInt(args[2]);

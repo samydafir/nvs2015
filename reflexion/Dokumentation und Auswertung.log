@@ -1,7 +1,7 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9) (preloaded format=pdflatex 2016.3.12)  7 APR 2016 10:23
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9) (preloaded format=pdflatex 2016.3.12)  11 APR 2016 19:17
 entering extended mode
-**"./Dokumentation und Reflexion.tex"
-("Dokumentation und Reflexion.tex"
+**"./Dokumentation und Auswertung.tex"
+("Dokumentation und Auswertung.tex"
 LaTeX2e <2016/02/01>
 Babel <3.9q> and hyphenation patterns for 70 language(s) loaded.
 ("E:\Program Files\MiKTeX 2.9\tex\latex\base\article.cls"
@@ -153,8 +153,8 @@ File: babel.def 2016/02/09 3.9q Babel common definitions
 \l@nswissgerman = a dialect from \language\l@ngerman 
 Package babel Info: Making " an active character on input line 88.
 )))
-("Dokumentation und Reflexion.aux")
-\openout1 = `"Dokumentation und Reflexion.aux"'.
+("Dokumentation und Auswertung.aux")
+\openout1 = `"Dokumentation und Auswertung.aux"'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 13.
 LaTeX Font Info:    ... okay on input line 13.
@@ -235,12 +235,7 @@ LaTeX Font Info:    Try loading font information for U+msb on input line 14.
 
 ("E:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\umsb.fd"
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-)
-Overfull \hbox (17.87778pt too wide) in paragraph at lines 18--18
-[]\OT1/cmr/bx/n/17.28 Dokumentation und Re-fle-xi-on (Java-Version) 
- []
-
-[1
+) [1
 
 {C:/Users/Samy/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}]
 Overfull \hbox (9.25378pt too wide) in paragraph at lines 36--38
@@ -273,24 +268,24 @@ File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <12> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 83.
- [5]
-("Dokumentation und Reflexion.aux") ) 
+ [5] [6]
+("Dokumentation und Auswertung.aux") ) 
 Here is how much of TeX's memory you used:
  2923 strings out of 493622
- 38508 string characters out of 3143647
+ 38518 string characters out of 3143647
  107371 words of memory out of 3000000
  6270 multiletter control sequences out of 15000+200000
  13024 words of font info for 50 fonts, out of 3000000 for 9000
  1025 hyphenation exceptions out of 8191
- 38i,6n,24p,852b,194s stack positions out of 5000i,500n,10000p,200000b,50000s
-<E:/Program Files/MiKTeX 2.9/fonts/type1/p
-ublic/amsfonts/cm/cmbx12.pfb><E:/Program Files/MiKTeX 2.9/fonts/type1/public/am
-sfonts/cm/cmmi12.pfb><E:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/c
-m/cmr12.pfb><E:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr17.p
-fb><E:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
-Output written on "Dokumentation und Reflexion.pdf" (5 pages, 84146 bytes).
+ 38i,6n,24p,853b,194s stack positions out of 5000i,500n,10000p,200000b,50000s
+<E:/Program Files/MiKTeX 2.9/fonts/type1/
+public/amsfonts/cm/cmbx12.pfb><E:/Program Files/MiKTeX 2.9/fonts/type1/public/a
+msfonts/cm/cmmi12.pfb><E:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/
+cm/cmr12.pfb><E:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr17.
+pfb><E:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
+Output written on "Dokumentation und Auswertung.pdf" (6 pages, 84112 bytes).
 PDF statistics:
- 38 PDF objects out of 1000 (max. 8388607)
+ 41 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 

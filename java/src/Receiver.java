@@ -1,7 +1,6 @@
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.InetAddress;
 import java.net.SocketTimeoutException;
 
 /**
@@ -23,8 +22,8 @@ public class Receiver {
      * 	args[1] timeout for the receiving socket
      */
 	public static void main(String[] args){
-		if(args.length != 3){
-			System.out.println("Usage: java Receiver <port number> <receiving timeout in ms> <expected packet amount> <packet paload-size>");
+		if(args.length != 2){
+			System.out.println("Usage: java Receiver <port number> <receiving timeout in ms>");
 		}else{
 			try{
 				receive(args);
@@ -52,31 +51,23 @@ public class Receiver {
 		//create datagram-packet with previously defined buffer. Received packets will be saved in this variable
 		DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
 		int packetCount = 0;
-		int senPort;
-		int recAmt = Integer.parseInt(args[2]);
-		InetAddress senAddr;
 		try{
 			//infinite loop to receive packets. Only terminated if no packets arrive for a certain specified time
 			//e.g. if a connection problem occurs or no more packets are sent by the Sender.
 			socket.receive(packet);
-			senPort = packet.getPort();
-			senAddr = packet.getAddress();
 			packetCount++;
 			beforeTime = System.currentTimeMillis();
-			while(packetCount < recAmt){
+			while(true){
 				socket.receive(packet);
 				afterTime = System.currentTimeMillis();
 				packetCount++;
 			}
 		//if the socket-timeout is reached the thrown SocketTimeoutException is caught here. Number of received
 		//packets is printed.
-		}catch(SocketTimeoutException e){
-		}
+		}catch(SocketTimeoutException e){}
 		socket.close();
-		evaluate(afterTime, beforeTime, packet.getLength()-5, packetCount); 
+		evaluate(afterTime, beforeTime, packet.getLength()-5, packetCount);
 	}
-	
-	
 	
 	
 	
