@@ -1,7 +1,7 @@
-#ifndef SENDER_H
-#define SENDER_H
+#ifndef RECEIVER_H
+#define RECEIVER_H
 
 void handle_error(char *message);
 void evaluate(struct timeval before, struct timeval after, int msg_size, int amt);
-char* create_msg(int length);
-#endif /* SENDER_H */
+
+#endif /* RECEIVER_H */
