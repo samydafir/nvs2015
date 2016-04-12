@@ -75,13 +75,11 @@ int main(int argc, char *argv[]){
 
 
 void evaluate(struct timeval before, struct timeval after, int msg_size, int amt){
-    time_t duration = (after.tv_usec - before.tv_usec) +(after.tv_sec - before.tv_sec)*1000000;
-    printf("%ld\n", (long)duration);
+    time_t duration = (after.tv_usec - before.tv_usec)/1000 +(after.tv_sec - before.tv_sec)*1000;
     int total_size = msg_size * amt;
-    printf("%d\n",total_size);
     double speed = total_size/duration;
     printf("%d packets received\n", amt);
-    printf("%.2f MB/s\n", speed);
+    printf("%.2f KB/s\n", speed);
 
 }
 

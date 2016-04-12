@@ -65,21 +65,23 @@ int main(int argc, char *argv[]){
     while(rec_cnt < pack_exp && recvfrom(sock,buffer,total_pack_size,0,(struct sockaddr*)&sender,&sockaddr_len) >= 0){
         gettimeofday(&after, NULL);
         rec_cnt++;
+    }
+    if(rec_cnt == pack_exp){    
+        gettimeofday(&after, NULL);
     }    
-    gettimeofday(&after, NULL);
     evaluate(before, after, payload, rec_cnt);
     close(sock);
 }
 
 
 void evaluate(struct timeval before, struct timeval after, int msg_size, int amt){
-    time_t duration = (after.tv_usec - before.tv_usec) +(after.tv_sec - before.tv_sec)*1000000;
+    time_t duration = (after.tv_usec - before.tv_usec)/1000 +(after.tv_sec - before.tv_sec)*1000;
     printf("%ld\n", (long)duration);
     int total_size = msg_size * amt;
     printf("%d\n",total_size);
     double speed = total_size/duration;
     printf("%d packets received\n", amt);
-    printf("%.2f MB/s\n", speed);
+    printf("%.2f KB/s\n", speed);
 
 }
 
