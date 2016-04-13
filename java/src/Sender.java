@@ -20,8 +20,8 @@ public class Sender {
 	 * @param args cmd-arguments:
 	 * 	args[0] receiver name or IP-address
  	 * 	args[1] receiver port
- 	 * 	args[2] number of packet-sending steps
- 	 * 	args[3,4,5,...] number of packets to send in each step
+ 	 * 	args[2] number of packets to send
+ 	 *  args[3] size of each packet's User-Message 	
 	 */
 	public static void main(String[] args){
 		if(args.length != 4){
@@ -56,12 +56,10 @@ public class Sender {
 		//DatagramPacket checkPacket = new DatagramPacket(buffer, buffer.length);
 		int size = Integer.parseInt(args[3]);
 		String payload = getPayload(size);
-		System.out.println(payload.length());
 		int sendAmt = Integer.parseInt(args[2]);
-		//the inner for-loop handles sending of packets in each step. creates a string-message including the packet-number
-		//formatted to fill 4 bytes (fill with zeros). Create byte-array from string, receiver-info to generate packet and
+		//the for-loop handles sending of packets. creates a string-message including the packet-number.
+		//Create byte-array from string, receiver-info to generate packet and
 		//send the packet using the datagram socket.
-		
 		beforeTime = System.currentTimeMillis();
 		for(int i = 0; i < sendAmt; i++){
 			String message = i + " "+ payload;
@@ -75,6 +73,11 @@ public class Sender {
 		evaluate(afterTime, beforeTime, size+5, sendAmt);
 	}
 	
+	/**
+	 * constucts the User-Data for to be sent
+	 * @param length length of result string
+	 * @return string of given length
+	 */
 	private static String getPayload(int length){
 		StringBuilder sb = new StringBuilder();
 		for(int i = 0; i < length; i++){
@@ -84,16 +87,17 @@ public class Sender {
 		
 	}
 	
+	/**
+	 * evaluates the sending process. Computes Transfer-speed based on sent data and transfer-time
+	 * @param after timestamp after sending
+	 * @param before timestamp before sending
+	 * @param size size of a package's Message
+	 * @param amnt Amount of packets sent
+	 */
 	private static void evaluate(long after, long before, int size, int amnt){
 		long duration = after - before;
 		int totalSize = size * amnt;
 		double speed = (double)(totalSize)/(double)(duration);
-		System.out.println(String.format("%.2f KB/s", speed));
-		
-		
-		
+		System.out.println(String.format("%.2f KB/s", speed));		
 	}
-	
-	
 }
-

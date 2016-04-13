@@ -1,0 +1,148 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[latin1]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage[ngerman]{babel}
+\usepackage{inputenc}
+
+\title{NVS PS 2016: Programmieraufgabe}
+\author{Thomas Samy Dafir, Dominik Baumgartner, Vivien Wallner}
+\date{}
+\begin{document}
+	\maketitle
+	\section{Aufgabe}
+	Erstellen zweier Programme, von denen eines als Sender, das andere als Empfänger agiert. Der Sender soll mittels UDP Pakete an den Empfänger senden. Dabei sollen die ersten vier Byte jeder Nachricht eine fortlaufende Nummer enthalten.
+
+	\section{Dokumentation (Java-Version)}
+	Dokumentation: siehe auch kommentierten Sourcecode
+	
+	\subsection{Funktion allgemein}
+	Der Sender erstellt einen Datagram-Socket, dessen Adresse nicht bekannt sein muss, da der Sender nur sendet und keine Antwort erhält (es werden also keine Nachrichten an den Sender gesendet). Der Sendevorgang geht folgendermaßen vonstatten:
+	Die Nachricht liegt als String vor. Sie wird in ein Byte-Array konvertiert, indem  der ASCII-Wert jedes Zeichens des String als Byte repräsentiert wird. Aus diesem Array und der Empfänger-Info (IP, Port) wird dann ein UDP-Paket erstellt. Dieses wird dann dem Socket übergeben und versendet.
+	Der Empfänger erstellt einen Socket, um UDP-Pakete empfangen zu können. Die Port-Nummer des Socket muss hier jedoch bekannt sein, da der Sender Pakete an die Kombination aus IP-Adresse (in unserem Fall 127.0.0.1) und Port-Nummer sendet. Da die Nachricht, die ein UDP-Paket enthält eine Abfolge von Bytes ist, muss ein Buffer-Byte-Array erstellt werden, um empfangene Daten zu speichern.
+	Empfangsvorgang: Ein UDP-Paket kommt am Socket an und wird mittels $receive$ gespeichert. Die Nachricht kann dann mittels $getData$ extrahiert werden. Ergebnis ist ein Array von Byte Werten. Dieses muss nun interpretiert werden, da eine Byte-Folge je nach Kodierung verschiedene Bedeutungen haben kann. Da wir wissen, dass es sich um eine Nachricht handelt, die ursprünglich als String von ASCII-Zeichen vorlag, können wir nun aus diesen Bytes einen String bauen und erhalten damit die gesendete Nachricht im lesbaren Format.
+	
+	\subsection{Empfänger}
+	Generell müssen im Empfänger folgende Schritte ausgeführt werden:
+	\begin{enumerate}
+		\item Erstelle Datagram-Socket.
+		\item Erstelle Byte-Array als Buffer.
+		\item Erstelle Datagram-Paket Variable unter Verwendung des Buffers.
+		\item Empfange über den Socket Pakete.
+	\end{enumerate}
+	\subsubsection{Socket erstellen}
+	Ein Datagram Socket wird in Java durch ein Objekt des Type $DatagramSocket$ repräsentiert.
+	Dieses Objekt wird unter Angabe einer Port-Nummer erstellt. Im Falle des Empfängers muss diese bekannt sein, da der Sender Pakete an diesen Port sendet.
+	\subsubsection{Byte-Array und Datagram-Paket erstellen}
+	Nachrichten, die als UDP-Pakete versendet werden, werden durch eine Abfolge von Bytes (einem Byte-Array) repräsentiert. Jedes Paket enthält also ein Byte-Array mit der Nachricht in Bytes. Dieses Array wird jetzt verwendet, um eine Paket-Variable zu definieren, der jedes empfangene Paket zugewiesen wird.
+	\subsubsection{Pakete empfangen und zählen}
+	Um eine unbekannte Anzahl an Paketen zu empfangen, wird $socket.receive()$ in einer Schleife verwendet. $receive()$ ist eine "blocking"-Methode, die die Ausführung des aktuellen Thread so lange blockiert, bis ein Paket empfangen wird. Um diese Endlosschleife wieder verlassen zu können, wird ein Timeout für den Socket erstellt. Unter normalen Umständen wird der Empfangsvorgang nach dem Erhalt des letzten Pakets beendet. Werden nicht alle Pakete empfangen, übernimmt der Timeout das Beenden der Empfangsvorgangs.\newline
+	Dieser veranlasst den Socket, eine $SocketTimeoutException$ zu werfen, sobald die festgelegte Zeit verstrichen ist, ohne dass ein Paket empfangen wurde. Diese Exception wird in einem $catch$ nach der Schleife aufgefangen, danach an das Ende der Schleife zurückgesprungen und nur noch der Socket geschlossen. Auerdem werden in der Schleife de empfangenen Pakete gezählt.
+	
+	\subsection{Sender}
+	Um UDP-Pakete zu senden, müssen folgende Schritte ausgeführt werden.
+	\begin{enumerate}
+		\item Erstelle Datagram-Socket.
+		\item Erstelle Byte-Array als Buffer.
+		\item Erstelle ein InetAddress Object, das die Empfänger-IP repräsentiert.
+		\item Erstelle zu sendende Nachricht.
+		\item Erstelle und sende Pakete.
+	\end{enumerate}
+	\subsubsection{Socket erstellen}
+	Anders als im Empfänger wird der Socket hier unter Verwendung des leeren Standard-Konstruktors erstellt. Damit wird der Socket keiner bestimmten, sondern dem erst-freien Port zugewiesen. Die Port-Nummer ist damit nicht bekannt, wird jedoch nicht gebraucht, da vom Empfänger keine Antwort erwartet wird. 
+	\subsubsection{Byte-Array erstellen}
+	Auch hier wird ein Byte-Array erstellt, das später die zu sendende Nachricht enthalten und zur Erstellung der Datagram-Pakete benötigt wird.
+	\subsubsection{InetAdress Objekt erstellen}
+	Um ein Paket an den Empfänger zu senden, wird natürlich dessen IP-Adresse benötigt. Diese liegt hier als Hostname oder IP-Adresse im String-Format vor. Dieser String wir nun mittels $getByName()$ zu einer $InetAddress$ konvertiert, um später für das Erstellen der Pakets verwendet werden zu können.
+	\subsubsection{Nachricht erstellen}
+	Eine Nachricht wird unter Verwendung des aktuellen Schleifen-Index erstellt. Dieser wird einfach als Integer ohne Formatierung verwendet. An diesen String wird zusätzlich noch die vorgegebene Anzahl an Zeichen, die mit der Methode $getPayload$ erstellt wird angehängt.
+	\subsubsection{Pakete erstellen und senden}
+	Nun muss die Nachricht in ein Paket gepackt werden. Dazu wird zuerst der String in ein Byte-Array konvertiert und danach mit diesem Array ein Paket erstellt. Anders als beim Empfänger müssen hier zusätzlich Empfänger-Adresse und -Port angegeben werden, da das Paket hier nicht nur als Empfänger dient. Weiters werden beim Senden keine Adresse und Port angegeben, sämtliche Information ist im Paket gespeichert. Das erstellte Paket kann nun unter der Verwendung von $socket.send()$ verschickt werden. Dieser Vorgang wird wiederholt, bis der Sendevorgang beendet ist und keine Pakete mehr gesendet werden müssen.
+	
+	\subsection{Zeitmessung und zusätzliche Parameter}
+	Zeitmessung erfolgt mit zwei long-Variablen, denen mit $System.currentTimeMillis()$ die Zeitpunkte vor und nach dem Senden/Empfangen zugewiesen werden. Die Differenzzeit ist dann die Zeit, die der Sende-/Empfangsvorgang benötigt. Zusätzlich kann mittels cmd-Argumenten die Länge der im Sender erstellten Nachricht eingestellt werden. Die Nachricht wird dann mit der $getPayload()$-Methode erstellt, die einen String gegebener Länge erzeugt. Aus 
+	Länge * Paket-Anzahl ergibt sich die gesendete Datenmenge, mittels Division durch die Sendezeit erhalten wir die Übertragungsgeschwindigkeit. Diese Auswertung erfolgt mit der $evaluate()$-Methode.
+
+	
+	\newpage
+	\section{Dokumentation (C-Version)}
+	Dokumentation: siehe auch kommentierten Sourcecode
+	
+	\subsection{Funktion allgemein}
+	Aufgrund der in C nicht vorhandenen Objektorientierung gestaltet sich die Implementierung komplizierter als in Java. Anstatt praktischer vorhandener Klassen werden hier in Libraries vordefinierte Struct-Konstrukte in Zusammenhang mit Library-definierten Funktionen verwendet.
+	Im Sender müssen zuerst ein Socket und ein Adressen-Konstrukt, welches die Empfängerdaten enthält erstellt werden. Außerdem muss noch ein Character-Array erstellt werden, das die zu sendenden Nachrichten enthalten wird. Danach werden Nachrichten mit fortlaufender Nummer erstellt und im Buffer gespeichert um dann unter Angabe des Adressen-Konstrukts und des Sockets versendet zu werden.
+	Der Empfänger erstellt ebenfalls einen Socket und ein Adressen-Konstrukt, das unter anderem den die Port-Nummer enthält, auf der der Socket erstellt werden soll. Adresse und Socket sind hier 2 separate Objekte. Unter Verwendung von $bind$ werden dem Socket die im Adressen-Objekt gespeicherten Eigenschaften wie Port-Nummer zugewiesen. Danach können unter Verwendung von $revcfrom$ in einer Schleife viele Pakete empfangen werden. Um die "blocking"-Funktion $recvfrom$ wieder verlassen zu können, wird die Schleife terminiert, sobald alle Pakete erhalten wurden. Da auch ein Fall auftreten kann, in dem nicht alle Pakete erhalten werden, wird für den Socket vorsichtshalber ein Timeout gesetzt.  Werden für die Dauer des Timeout keine Pakete empfangen, gibt $recvfrom$ einen Wert kleiner 0 zurück, die Schleife wird abgebrochen und der Empfangsvorgang ist beendet.
+	
+	\subsection{Sender}
+	Um UDP-Pakete zu senden, müssen folgende Schritte ausgeführt werden.
+	\begin{itemize}
+		\item Socket erstellen.
+		\item $sockaddr\_in$ struct erstellen und Attribute festlegen.
+		\item Packets bestimmter Größe erzeugen.
+		\item Mit $sendto$ Pakete senden.
+	\end{itemize}
+	
+	\subsubsection{Socket erstellen}
+	In C wird mit $socket(AF\_INET,SOCK\_DGRAM,0)$ ein neuer IPv4-Datagram-Socket erstellt.
+	
+	\subsubsection{sockaddr\_in struct erstellen und Attribute festlegen}
+	Um den Empfänger um identifizieren, wird ein $sockaddr_in$-struct erstellt und IP und Port-Nummer des Empfängers den entsprechenden Member-Variablen zugewiesen.
+	
+	\subsubsection{Packets erzeugen}
+	Um Packets bestimmter Größe zu erzeugen, lesen wir das cmd-Argument aus, und rufen mit diesem Wert die $create_msg$-Methode auf, die einen Speicherbereich gegebener Größe mittels $malloc$ alloziert, mit einem konstanten char-Wert füllt und einen Pointer auf den erzeugten String zurückgibt. Dieser erzeugte String wird dann bei jedem Sendevorgang zusammen mit der Sequenznummer in den Puffer geschrieben.
+	
+	\subsubsection{Mit sendto Pakete senden}
+	Das eigentliche Versenden der Pakete erfolgt mit der Funktion $sendto$. Diese erwartet als Argumente unseren erstellten Socket, den Buffer, der die Nachricht enthält, die Länge des Buffer, sowie den erstellten sockaddr\_in-struct, der die Empfänger-Informationen enthält und dessen Länge. $sendto$ wird in einer Schleife ausgeführt, die erst beendet wird, wenn alle Pakete gesendet wurden.
+	
+	
+	\subsection{Empfänger}
+	Um UDP-Pakete zu empfangen müssen folgende Schritte ausgeführt werden.
+	\begin{itemize}
+		\item Socket erstellen.
+		\item $sockaddr\_in$ struct erstellen und Attribute festlegen.
+		\item Socket mit Adressen-Objekt mittels $bind$ verbinden.
+		\item Timeout für Socket festlegen.
+		\item Mittels $recvfrom$ Pakete empfangen.
+	\end{itemize}
+	
+	\subsubsection{Socket erstellen}
+	Der Socket wird auf gleiche Weise erstellt, wie der Sender-Socket.
+	
+	\subsubsection{sockaddr\_in struct erstellen und Attribute festlegen}
+	Auch im Empfänger wird ein $sockaddr\_in$-struct gebraucht. Dieser erhält als Attribute die Port-Nummer, eine Einschränkung, von welchen IP-Adressen Pakete akzeptiert werden und die Information dass IPv4 verwendet wird.
+	
+	\subsubsection{Socket mit Adressen-Objekt mittels bind verbinden}
+	Da der Socket und die Socket-Eigenschaften hier 2 getrennte Strukturen sind, müssen diese mittels $bind$ verbunden werden. Damit werden dem Socket das im $sockaddr_in$-struct definierte Verhalten Attribute zugewiesen
+	
+	\subsubsection{Timeout festlegen und Pakete mit recvfrom empfangen}
+	Die Terminierung des Empfangsvorgangs wird primär nach dem Empfang des letzten Pakets ausgeführt. Um jedoch auch in Fällen, in denen nicht alle Pakete empfangen wurden, oder sonstige Fehler aufgetreten sind eine Terminierung des Programms zu gewährleisten, wurde ein Timeout gesetzt, der in diesen Fällen die Ausführung terminiert. Der Timeout wird erst nach Empfang des ersten Pakets gesetzt, damit mehr Zeit für das Starten des Senders bleibt.
+	Danach werden mit $recvfrom$ Pakete über den Socket empfangen und in den Buffer geschrieben.
+	
+	\subsection{Auswertung}
+	Für die Auswertung werden die Anfangs- und Endzeitpunkte, sowie Anzahl und Größe der Pakete festgehalten. Die Auswertung erfolgt im Sender, wie auch im Empfänger mit der $evaluate$-Funktion. Diese berechnet aus der Paketgröße in
+	Kombination mit der Paketanzahl die Gesamtgröße und mittels Division durch die benötigte Zeit die Übertragungsgeschwindigkeit. Diese Auswertungen sind als Kennlinien im Kapitel Auswertung einzusehen.
+	
+	\section{Auswertung}
+	Ausgewertet wird in hier der Verlauf der Übertragungsgeschwindigkeit als Funktion der Paketgröße. Es wurden jeweils drei Kennlinien erstellt, die die Verläufe beim Senden von 100, 1000 und 10000 Paketen repräsentieren. Die Werte für jede Kennlinie wurden bis zur maximalen Paketgröße aufgenommen, bei der noch keine Paketverluste auftreten.
+	Interessant ist, dass die C-Version trotz annähernd gleicher Implementierung ohne überflüssige Operationen um ein vielfaches schneller empfängt als die Java-Version.
+		
+	\subsection{C-Version}
+	Anfangs steigt die Geschwindigkeit linear an, da mit den zu Beginn kurzen Nachrichten die Übertragungsbandbreite nicht ausgenutzt wird, somit steigt bei steigender Paket-Größe die Geschwindigkeit stark an, da aufgrund nicht vollständig ausgefüllten Kapazität kaum Zeiteinbußen entstehen. Mit stark steigender Paketgröße, also ca ab 4000 Byte nimmt der Zuwachs ab, da wir uns hier der Kapazitätsgrenze der Übertragung nähern und größere Pakete signifikant mehr Zeit benötigen, um empfangen zu werden. Bei einer Paketgröße von ca. 10000 Byte beginnen bei der Übertragung Verluste aufzutreten. Hier wurde nicht weiter geplottet.\\
+	\newline
+	\includegraphics[width=\textwidth]{c.png}
+	
+	\subsection{Java-Version}
+	Die Übertragung zeigt hier (bis auf Ausreißer) ein annähernd lineares Verhalten. Hier ist interessanterweise kein Abnehmen des Geschwindigkeitszuwachses zu verzeichnen. Dieser ist langsamer als in der C-Version, aber kontinuierlich und nimmt nicht ab, bevor Verluste auftreten.
+	\newline
+	\includegraphics[width=\textwidth]{java.png}
+	
+	\subsection{Zusätzliche Bemerkungen}
+	Als interessantes Detail fällt auf, dass ein Senden vom C-Sender zum Java-Empfänger sehr schnell Verluste aufweist, da dieser mit der hohe Sendegeschwindigkeit nicht fertig wird.
+	Erwartungsgemäß gibt es dieses Problem beim Senden vom Java-Sender zum C-Empfänger nicht.
+	Dies bestätigt die Annahme, dass der Java-Empfänger um ein Vielfaches langsamer ist als sein C Pendant.
+	
+	
+	
+\end{document}

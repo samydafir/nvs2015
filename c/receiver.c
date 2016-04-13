@@ -1,3 +1,7 @@
+/*
+RECEIVER 
+Please read "Dokumentation_und_Auswertung.pdf" for more precise information
+*/
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/time.h>
@@ -17,7 +21,7 @@ int main(int argc, char *argv[]){
     if(argc != 5){
         handle_error("Usage: ./receiver <port> <timeout in s> <number of ecpected packets> <packet payload size>");
     }
-    //requied local var declaration
+    //required local var declaration
     int sock, sockaddr_len, one, t_out, rec_cnt, payload, total_pack_size, pack_exp;
     struct sockaddr_in receiver, sender;
     struct timeval timeout, before, after;
@@ -38,14 +42,16 @@ int main(int argc, char *argv[]){
     receiver.sin_addr.s_addr = htonl(INADDR_ANY);
     receiver.sin_port = htons(atoi(argv[1]));
 
-    //configure timeout for socket
+    /*configure timeout for socket. Only needed to terminate if at least
+    one packet was not received */
     timeout.tv_sec = atoi(argv[2]);
     timeout.tv_usec = 0;
 
     //bind socket to created address
     bind(sock,(struct sockaddr*)&receiver,sizeof(receiver));
 
-    //calculate sizeof sockaddr struct
+    /*calculate size of sockaddr struct. Saved into a variable due to recvfrom requires
+    the memory address where sizeof(sockaddr*) is saved*/
     sockaddr_len = sizeof(struct sockaddr_in);
 
     //enter while loop and receive packets from the socket and save them into the buffer
@@ -66,6 +72,7 @@ int main(int argc, char *argv[]){
         gettimeofday(&after, NULL);
         rec_cnt++;
     }
+    //timestamp is only refreshed if all packets were received
     if(rec_cnt == pack_exp){    
         gettimeofday(&after, NULL);
     }    
@@ -73,47 +80,21 @@ int main(int argc, char *argv[]){
     close(sock);
 }
 
-
+/*
+evaluates the receive-operation. calculates transfer-speed and prints it.
+*/
 void evaluate(struct timeval before, struct timeval after, int msg_size, int amt){
     time_t duration = (after.tv_usec - before.tv_usec)/1000 +(after.tv_sec - before.tv_sec)*1000;
     int total_size = msg_size * amt;
     double speed = total_size/duration;
     printf("%d packets received\n", amt);
     printf("%.2f KB/s\n", speed);
-
 }
 
+/*
+handles errors. Prints error-message and quits application
+*/
 void handle_error(char *message){
     puts(message);
     exit(1);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

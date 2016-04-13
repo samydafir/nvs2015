@@ -1,7 +1,7 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9) (preloaded format=pdflatex 2016.3.12)  11 APR 2016 19:17
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9) (preloaded format=pdflatex 2016.3.12)  13 APR 2016 19:25
 entering extended mode
-**"./Dokumentation und Auswertung.tex"
-("Dokumentation und Auswertung.tex"
+**./Dokumentation_und_Auswertung.tex
+(Dokumentation_und_Auswertung.tex
 LaTeX2e <2016/02/01>
 Babel <3.9q> and hyphenation patterns for 70 language(s) loaded.
 ("E:\Program Files\MiKTeX 2.9\tex\latex\base\article.cls"
@@ -153,8 +153,8 @@ File: babel.def 2016/02/09 3.9q Babel common definitions
 \l@nswissgerman = a dialect from \language\l@ngerman 
 Package babel Info: Making " an active character on input line 88.
 )))
-("Dokumentation und Auswertung.aux")
-\openout1 = `"Dokumentation und Auswertung.aux"'.
+(Dokumentation_und_Auswertung.aux)
+\openout1 = `Dokumentation_und_Auswertung.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 13.
 LaTeX Font Info:    ... okay on input line 13.
@@ -243,49 +243,72 @@ Overfull \hbox (9.25378pt too wide) in paragraph at lines 36--38
  $\OML/cmm/m/it/12 DatagramSocket$
  []
 
-
-Overfull \hbox (24.536pt too wide) in paragraph at lines 45--47
-\OT1/cmr/m/n/12 Der Sen-der nimmt w[]ahrend des Sen-de-vor-gangs kei-ne R[]ucks
-icht auf den Empf[]anger
- []
-
 [2] [3]
-Overfull \hbox (10.56384pt too wide) in paragraph at lines 69--70
+Overfull \hbox (10.56384pt too wide) in paragraph at lines 62--63
 \OT1/cmr/m/n/12 Adresse und -Port an-ge-ge-ben wer-den, da das Pa-ket hier nich
 t nur als Empf[]anger
  []
 
 
-Overfull \hbox (13.83548pt too wide) in paragraph at lines 69--70
+Overfull \hbox (13.83548pt too wide) in paragraph at lines 62--63
 \OT1/cmr/m/n/12 dient. Wei-ters wer-den beim Sen-den kei-ne Adres-se und Port a
 n-ge-ge-ben, s[]amtliche
  []
 
+
+Overfull \hbox (43.14243pt too wide) in paragraph at lines 65--67
+\OT1/cmr/m/n/12 Zeitmessung er-folgt mit zwei long-Variablen, de-nen mit $\OML/
+cmm/m/it/12 System:currentTimeMillis\OT1/cmr/m/n/12 ()$
+ []
+
 [4]
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 83.
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 81.
  ("E:\Program Files\MiKTeX 2.9\tex\latex\base\omscmr.fd"
 File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <12> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 83.
- [5] [6]
-("Dokumentation und Auswertung.aux") ) 
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 81.
+
+Overfull \hbox (19.70193pt too wide) in paragraph at lines 88--89
+\OT1/cmr/m/n/12 In C wird mit $\OML/cmm/m/it/12 socket\OT1/cmr/m/n/12 (\OML/cmm
+/m/it/12 AF[]INET; SOCK[]DGRAM; \OT1/cmr/m/n/12 0)$ ein neu-er IPv4-Datagram-
+ []
+
+[5] [6] [7] <c.png, id=30, 838.63312pt x 502.87875pt>
+File: c.png Graphic file (type png)
+ <use c.png>
+Package pdftex.def Info: c.png used on input line 134.
+(pdftex.def)             Requested size: 390.0pt x 233.85922pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 132--135
+
+ []
+
+<java.png, id=31, 839.38594pt x 503.63156pt>
+File: java.png Graphic file (type png)
+ <use java.png>
+Package pdftex.def Info: java.png used on input line 139.
+(pdftex.def)             Requested size: 390.0pt x 234.00182pt.
+ [8 <./c.png>]
+[9 <./java.png>] (Dokumentation_und_Auswertung.aux) ) 
 Here is how much of TeX's memory you used:
- 2923 strings out of 493622
- 38518 string characters out of 3143647
- 107371 words of memory out of 3000000
- 6270 multiletter control sequences out of 15000+200000
- 13024 words of font info for 50 fonts, out of 3000000 for 9000
+ 2930 strings out of 493622
+ 38583 string characters out of 3143647
+ 104371 words of memory out of 3000000
+ 6276 multiletter control sequences out of 15000+200000
+ 12403 words of font info for 48 fonts, out of 3000000 for 9000
  1025 hyphenation exceptions out of 8191
- 38i,6n,24p,853b,194s stack positions out of 5000i,500n,10000p,200000b,50000s
-<E:/Program Files/MiKTeX 2.9/fonts/type1/
-public/amsfonts/cm/cmbx12.pfb><E:/Program Files/MiKTeX 2.9/fonts/type1/public/a
-msfonts/cm/cmmi12.pfb><E:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/
-cm/cmr12.pfb><E:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr17.
-pfb><E:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
-Output written on "Dokumentation und Auswertung.pdf" (6 pages, 84112 bytes).
+ 38i,6n,24p,923b,194s stack positions out of 5000i,500n,10000p,200000b,50000s
+<E:/Program Files/MiKTeX 2
+.9/fonts/type1/public/amsfonts/cm/cmbx12.pfb><E:/Program Files/MiKTeX 2.9/fonts
+/type1/public/amsfonts/cm/cmmi12.pfb><E:/Program Files/MiKTeX 2.9/fonts/type1/p
+ublic/amsfonts/cm/cmmi8.pfb><E:/Program Files/MiKTeX 2.9/fonts/type1/public/ams
+fonts/cm/cmr12.pfb><E:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/
+cmr17.pfb><E:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pf
+b>
+Output written on Dokumentation_und_Auswertung.pdf (9 pages, 170997 bytes).
 PDF statistics:
- 41 PDF objects out of 1000 (max. 8388607)
+ 58 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 11 words of extra memory for PDF output out of 10000 (max. 10000000)
 

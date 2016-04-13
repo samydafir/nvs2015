@@ -1,5 +1,7 @@
-/* SENDER */
-
+/*
+SENDER 
+Please read "Dokumentation_und_Auswertung.pdf" for more precise information
+*/
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <stdio.h>
@@ -47,8 +49,9 @@ int main(int argc, char *argv[]){
 
     //copy host address into sockaddr_in struct -> add to addr info and set port
     bcopy((char *)host->h_addr, (char *)&receiver.sin_addr, host->h_length);
-    receiver.sin_port = htons(atoi(argv[2]));    
+    receiver.sin_port = htons(atoi(argv[2]));
     gettimeofday(&before, NULL);
+    //start sending
     for(amt_sent = 0; amt_sent < amt_send; amt_sent++){
         //zero out buffer
         bzero(buffer, total_pack_size);
@@ -67,9 +70,7 @@ int main(int argc, char *argv[]){
 }
 
 /*
-evaluates the send-operation. calculates transfer-speed and prints it. takes only distinct packets
-into account: e.g. if we sent 1000 packets only recognizes 1000 packets as valid user information.
-packets sent more than one are only counted twice, thus making measurment objective and expressive
+evaluates the send-operation. calculates transfer-speed and prints it.
 */
 void evaluate(struct timeval before, struct timeval after, int msg_size, int amt){
     time_t duration = (after.tv_usec - before.tv_usec)/1000 +(after.tv_sec - before.tv_sec)*1000;

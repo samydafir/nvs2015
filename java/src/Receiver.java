@@ -13,7 +13,7 @@ import java.net.SocketTimeoutException;
 public class Receiver {
     
 	//setting MAXSIZE to 100
-    private final static int SIZE = 2048;
+    private final static int SIZE = 10000;
     /**
      * main handles wrong numbers of cmd-arguments. Wrong numbers lead to a message describing usage being
      * issued, otherwise receive() is called. IOExceptions thrown in the receive-method are handled here.
@@ -55,8 +55,8 @@ public class Receiver {
 			//infinite loop to receive packets. Only terminated if no packets arrive for a certain specified time
 			//e.g. if a connection problem occurs or no more packets are sent by the Sender.
 			socket.receive(packet);
-			packetCount++;
 			beforeTime = System.currentTimeMillis();
+			packetCount++;
 			while(true){
 				socket.receive(packet);
 				afterTime = System.currentTimeMillis();
@@ -70,7 +70,13 @@ public class Receiver {
 	}
 	
 	
-	
+	/**
+	 * evaluates the sending process. Computes Transfer-speed based on sent data and transfer-time
+	 * @param after timestamp after sending
+	 * @param before timestamp before sending
+	 * @param size size of a package's Message
+	 * @param amnt Amount of packets sent
+	 */
 	private static void evaluate(long after, long before, int size, int amnt){
 		System.out.println(size);
 		System.out.println(amnt + " packets received");
