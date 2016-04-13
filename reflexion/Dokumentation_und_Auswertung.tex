@@ -38,7 +38,7 @@
 	\subsubsection{Byte-Array und Datagram-Paket erstellen}
 	Nachrichten, die als UDP-Pakete versendet werden, werden durch eine Abfolge von Bytes (einem Byte-Array) repräsentiert. Jedes Paket enthält also ein Byte-Array mit der Nachricht in Bytes. Dieses Array wird jetzt verwendet, um eine Paket-Variable zu definieren, der jedes empfangene Paket zugewiesen wird.
 	\subsubsection{Pakete empfangen und zählen}
-	Um eine unbekannte Anzahl an Paketen zu empfangen, wird $socket.receive()$ in einer Schleife verwendet. $receive()$ ist eine "blocking"-Methode, die die Ausführung des aktuellen Thread so lange blockiert, bis ein Paket empfangen wird. Um diese Endlosschleife wieder verlassen zu können, wird ein Timeout für den Socket erstellt. Unter normalen Umständen wird der Empfangsvorgang nach dem Erhalt des letzten Pakets beendet. Werden nicht alle Pakete empfangen, übernimmt der Timeout das Beenden der Empfangsvorgangs.\newline
+	Um eine unbekannte Anzahl an Paketen zu empfangen, wird $socket.receive$ in einer Schleife verwendet. $receive$ ist eine "blocking"-Methode, die die Ausführung des aktuellen Thread so lange blockiert, bis ein Paket empfangen wird. Um diese Endlosschleife wieder verlassen zu können, wird ein Timeout für den Socket erstellt. Unter normalen Umständen wird der Empfangsvorgang nach dem Erhalt des letzten Pakets beendet. Werden nicht alle Pakete empfangen, übernimmt der Timeout das Beenden der Empfangsvorgangs.\newline
 	Dieser veranlasst den Socket, eine $SocketTimeoutException$ zu werfen, sobald die festgelegte Zeit verstrichen ist, ohne dass ein Paket empfangen wurde. Diese Exception wird in einem $catch$ nach der Schleife aufgefangen, danach an das Ende der Schleife zurückgesprungen und nur noch der Socket geschlossen. Auerdem werden in der Schleife de empfangenen Pakete gezählt.
 	
 	\subsection{Sender}
@@ -55,15 +55,15 @@
 	\subsubsection{Byte-Array erstellen}
 	Auch hier wird ein Byte-Array erstellt, das später die zu sendende Nachricht enthalten und zur Erstellung der Datagram-Pakete benötigt wird.
 	\subsubsection{InetAdress Objekt erstellen}
-	Um ein Paket an den Empfänger zu senden, wird natürlich dessen IP-Adresse benötigt. Diese liegt hier als Hostname oder IP-Adresse im String-Format vor. Dieser String wir nun mittels $getByName()$ zu einer $InetAddress$ konvertiert, um später für das Erstellen der Pakets verwendet werden zu können.
+	Um ein Paket an den Empfänger zu senden, wird natürlich dessen IP-Adresse benötigt. Diese liegt hier als Hostname oder IP-Adresse im String-Format vor. Dieser String wir nun mittels $getByName$ zu einer $InetAddress$ konvertiert, um später für das Erstellen der Pakets verwendet werden zu können.
 	\subsubsection{Nachricht erstellen}
 	Eine Nachricht wird unter Verwendung des aktuellen Schleifen-Index erstellt. Dieser wird einfach als Integer ohne Formatierung verwendet. An diesen String wird zusätzlich noch die vorgegebene Anzahl an Zeichen, die mit der Methode $getPayload$ erstellt wird angehängt.
 	\subsubsection{Pakete erstellen und senden}
-	Nun muss die Nachricht in ein Paket gepackt werden. Dazu wird zuerst der String in ein Byte-Array konvertiert und danach mit diesem Array ein Paket erstellt. Anders als beim Empfänger müssen hier zusätzlich Empfänger-Adresse und -Port angegeben werden, da das Paket hier nicht nur als Empfänger dient. Weiters werden beim Senden keine Adresse und Port angegeben, sämtliche Information ist im Paket gespeichert. Das erstellte Paket kann nun unter der Verwendung von $socket.send()$ verschickt werden. Dieser Vorgang wird wiederholt, bis der Sendevorgang beendet ist und keine Pakete mehr gesendet werden müssen.
+	Nun muss die Nachricht in ein Paket gepackt werden. Dazu wird zuerst der String in ein Byte-Array konvertiert und danach mit diesem Array ein Paket erstellt. Anders als beim Empfänger müssen hier zusätzlich Empfänger-Adresse und -Port angegeben werden, da das Paket hier nicht nur als Empfänger dient. Weiters werden beim Senden keine Adresse und Port angegeben, sämtliche Information ist im Paket gespeichert. Das erstellte Paket kann nun unter der Verwendung von $socket.send$ verschickt werden. Dieser Vorgang wird wiederholt, bis der Sendevorgang beendet ist und keine Pakete mehr gesendet werden müssen.
 	
 	\subsection{Zeitmessung und zusätzliche Parameter}
-	Zeitmessung erfolgt mit zwei long-Variablen, denen mit $System.currentTimeMillis()$ die Zeitpunkte vor und nach dem Senden/Empfangen zugewiesen werden. Die Differenzzeit ist dann die Zeit, die der Sende-/Empfangsvorgang benötigt. Zusätzlich kann mittels cmd-Argumenten die Länge der im Sender erstellten Nachricht eingestellt werden. Die Nachricht wird dann mit der $getPayload()$-Methode erstellt, die einen String gegebener Länge erzeugt. Aus 
-	Länge * Paket-Anzahl ergibt sich die gesendete Datenmenge, mittels Division durch die Sendezeit erhalten wir die Übertragungsgeschwindigkeit. Diese Auswertung erfolgt mit der $evaluate()$-Methode.
+	Zeitmessung erfolgt mit zwei long-Variablen, denen mit $System.currentTimeMillis$ die Zeitpunkte vor und nach dem Senden/Empfangen zugewiesen werden. Die Differenzzeit ist dann die Zeit, die der Sende-/Empfangsvorgang benötigt. Zusätzlich kann mittels cmd-Argumenten die Länge der im Sender erstellten Nachricht eingestellt werden. Die Nachricht wird dann mit der $getPayload$-Methode erstellt, die einen String gegebener Länge erzeugt. Aus 
+	Länge * Paket-Anzahl ergibt sich die gesendete Datenmenge, mittels Division durch die Sendezeit erhalten wir die Übertragungsgeschwindigkeit. Diese Auswertung erfolgt mit der $evaluate$-Methode.
 
 	
 	\newpage

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9) (preloaded format=pdflatex 2016.3.12)  13 APR 2016 19:25
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9) (preloaded format=pdflatex 2016.3.12)  13 APR 2016 19:34
 entering extended mode
 **./Dokumentation_und_Auswertung.tex
 (Dokumentation_und_Auswertung.tex
@@ -243,6 +243,12 @@ Overfull \hbox (9.25378pt too wide) in paragraph at lines 36--38
  $\OML/cmm/m/it/12 DatagramSocket$
  []
 
+
+Overfull \hbox (8.90161pt too wide) in paragraph at lines 41--43
+\OT1/cmr/m/n/12 ei-ner Schlei-fe ver-wen-det. $\OML/cmm/m/it/12 receive$ \OT1/c
+mr/m/n/12 ist ei-ne "blocking-Me-tho-de, die die Ausf[]uhrung
+ []
+
 [2] [3]
 Overfull \hbox (10.56384pt too wide) in paragraph at lines 62--63
 \OT1/cmr/m/n/12 Adresse und -Port an-ge-ge-ben wer-den, da das Pa-ket hier nich
@@ -256,9 +262,9 @@ n-ge-ge-ben, s[]amtliche
  []
 
 
-Overfull \hbox (43.14243pt too wide) in paragraph at lines 65--67
+Overfull \hbox (34.00363pt too wide) in paragraph at lines 65--67
 \OT1/cmr/m/n/12 Zeitmessung er-folgt mit zwei long-Variablen, de-nen mit $\OML/
-cmm/m/it/12 System:currentTimeMillis\OT1/cmr/m/n/12 ()$
+cmm/m/it/12 System:currentTimeMillis$
  []
 
 [4]
@@ -306,7 +312,7 @@ ublic/amsfonts/cm/cmmi8.pfb><E:/Program Files/MiKTeX 2.9/fonts/type1/public/ams
 fonts/cm/cmr12.pfb><E:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/
 cmr17.pfb><E:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pf
 b>
-Output written on Dokumentation_und_Auswertung.pdf (9 pages, 170997 bytes).
+Output written on Dokumentation_und_Auswertung.pdf (9 pages, 170971 bytes).
 PDF statistics:
  58 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
