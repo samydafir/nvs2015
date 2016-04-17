@@ -2,6 +2,8 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.nio.ByteBuffer;
+import java.util.zip.CRC32;
 
 /**
  * Sender represents a UDP packet sender. Parameters can be specified via cmd.
@@ -50,27 +52,37 @@ public class Sender {
 		//create socket with standard constructor. Sender-port does not have to be known.
 		DatagramSocket socket = new DatagramSocket();
 		//transform the cmd-argument receiver-name into an InetAddress object.
+		CRC32 checksum = new CRC32();
 		InetAddress address = InetAddress.getByName(args[0]);
 		int receiverSocket = Integer.parseInt(args[1]);
-		byte[] buffer = new byte[30];
-		//DatagramPacket checkPacket = new DatagramPacket(buffer, buffer.length);
 		int size = Integer.parseInt(args[3]);
-		String payload = getPayload(size);
+		ByteBuffer buffer = ByteBuffer.allocate(size + 5);
+		byte[] message = getPayload(size);
+		//DatagramPacket checkPacket = new DatagramPacket(buffer, buffer.length);
 		int sendAmt = Integer.parseInt(args[2]);
 		//the for-loop handles sending of packets. creates a string-message including the packet-number.
 		//Create byte-array from string, receiver-info to generate packet and
 		//send the packet using the datagram socket.
 		beforeTime = System.currentTimeMillis();
 		for(int i = 0; i < sendAmt; i++){
-			String message = i + " "+ payload;
-			buffer = message.getBytes();
-			DatagramPacket packet = new DatagramPacket(buffer, buffer.length, address, receiverSocket);
+			buffer.putInt(i);
+			if(i < sendAmt -1){
+				buffer.put(message);
+				checksum.update(buffer.array());
+			}else{
+				buffer.put(message,0,message.length-4);
+				checksum.update(buffer.array());
+				buffer.putInt((int) checksum.getValue());
+			}
+			DatagramPacket packet = new DatagramPacket(buffer.array(), buffer.array().length, address, receiverSocket);
 			socket.send(packet);
+			buffer.clear();
 		}
 		afterTime = System.currentTimeMillis();
 		socket.close();
 		//+5 for header size
 		evaluate(afterTime, beforeTime, size+5, sendAmt);
+		System.out.println(checksum.getValue());
 	}
 	
 	/**
@@ -78,12 +90,13 @@ public class Sender {
 	 * @param length length of result string
 	 * @return string of given length
 	 */
-	private static String getPayload(int length){
+	private static byte[] getPayload(int length){
 		StringBuilder sb = new StringBuilder();
+		sb.append(' ');
 		for(int i = 0; i < length; i++){
 			sb.append("a");
 		}
-		return sb.toString();
+		return sb.toString().getBytes();
 		
 	}
 	
