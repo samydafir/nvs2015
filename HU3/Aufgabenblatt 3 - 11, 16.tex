@@ -1,0 +1,120 @@
+\documentclass[12pt,a4paper]{report}
+\usepackage{amssymb,amsthm,amsmath,amscd}
+\usepackage{latexsym}
+\usepackage{enumerate}
+\usepackage[german]{babel}
+\usepackage{verbatim}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+\usepackage{graphicx}
+
+%  theorem environments
+\newtheorem{thm}{Satz}[section]
+\newtheorem{cor}[thm]{Korollar}
+\newtheorem{lem}[thm]{Lemma}
+%\newtheorem{prop}[thm]{Proposition}
+%\newtheorem{ax}{Axiom}
+
+\theoremstyle{definition}
+\newtheorem{defn}[thm]{Definition}
+\newtheorem{rem}[thm]{Bemerkung}
+\newtheorem{exa}[thm]{Beispiel}
+
+
+
+\begin{document}
+% ---------------
+
+\begin{titlepage}
+	\begin{center}
+		
+		\vspace*{1.0cm}
+		\huge
+		\textsc{\bf{PS Netze und Verteilte Systeme}}
+		
+		\vspace*{4.0cm}
+		\textsc{
+			\normalsize{eingereicht von} \\[0.5\baselineskip]
+			{\large Baumgartner Dominik}
+		}
+		
+		\vspace*{3.0cm}
+		\textsc{
+			\normalsize{Gruppe 1(13:00)}
+		}
+		
+	\end{center}
+	
+\end{titlepage}
+
+
+\textbf{Aufgabe 11:}
+\\
+\\
+Wer ist Vinton Gray Cerf und was hat er/sie mit „Netzen“ zu tun? Recherchieren Sie über
+Wikipedia hinaus und geben Sie alle Quellen an!
+\\
+\\
+Vinton Gray Cerf, geb. 23. Juni 1943, ist ein amerikanischer Informatiker. Gilt als "Vater des Internets". Entwickelte TCP/IP Protokolle mit Bob Kahn. Entwickelte Protokoll für ARPANET (Advanced Research Projects Agency Network), erste Netzwerk basierend auf Packet switching. Bekam 2004 den Touring Award verliehen. 2005 wurde er Vize Präsident von Google.
+\\
+\\
+Quellen:\\
+\url{http://www.britannica.com/biography/Vinton-Gray-Cerf}\\
+\\
+\url{http://www.thefamouspeople.com/profiles/vint-cerf-6206.php}
+\\
+\\
+\textbf{Aufgabe 16:}
+\\
+\\
+Was ist die Aufgabe und welche Funktionen bietet das Unix-Tool $ifconfig$?
+\\
+\\
+$ifconfig$ wird benutzt um ein Netzwerk zu konfigurieren oder die Einstellungen eines Netzwerk Interfaces zu betrachten.
+\\
+$ifconfig$ ist die Abkürzung für $"$interface configuration".\\
+Mit dem Befehl $ifconfig$ ohne Argumente kann man sich Informationen über alle Netzwerk Interfaces die derzeit laufen ansehen. 
+\\
+Bsp. von \url{http://www.computerhope.com/unix/uifconfi.htm}\\
+\\
+\begin{tabular}{c l}
+eth0 & Link encap:Ethernet  HWaddr 09:00:12:90:e3:e5\\  
+ & inet addr:192.168.1.29 Bcast:192.168.1.255  Mask:255.255.255.0\\
+ & inet6 addr: fe80::a00:27ff:fe70:e3f5/64 Scope:Link\\
+ & UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1\\
+ & RX packets:54071 errors:1 dropped:0 overruns:0 frame:0\\
+ & TX packets:48515 errors:0 dropped:0 overruns:0 carrier:0\\
+ & collisions:0 txqueuelen:1000 \\
+ & RX bytes:22009423 (20.9 MiB)  TX bytes:25690847 (24.5 MiB)\\
+ & Interrupt:10 Base address:0xd020 \\
+ & \\
+lo & Link encap:Local Loopback  \\
+ & inet addr:127.0.0.1  Mask:255.0.0.0\\
+ & inet6 addr: ::1/128 Scope:Host\\
+ & UP LOOPBACK RUNNING  MTU:16436  Metric:1\\
+ & RX packets:83 errors:0 dropped:0 overruns:0 frame:0\\
+ & TX packets:83 errors:0 dropped:0 overruns:0 carrier:0\\
+ & collisions:0 txqueuelen:0 \\
+ & RX bytes:7766 (7.5 KiB)  TX bytes:7766 (7.5 KiB)\\
+ & \\
+wlan0 & Link encap:Ethernet  HWaddr 58:a2:c2:93:27:36  \\
+ & inet addr:192.168.1.64  Bcast:192.168.2.255  Mask:255.255.255.0\\
+ & inet6 addr: fe80::6aa3:c4ff:fe93:4746/64 Scope:Link\\
+ & UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1\\
+ & RX packets:436968 errors:0 dropped:0 overruns:0 frame:0\\
+ & TX packets:364103 errors:0 dropped:0 overruns:0 carrier:0\\
+ & collisions:0 txqueuelen:1000 \\
+ & RX bytes:115886055 (110.5 MiB)  TX bytes:83286188 (79.4 MiB)\\
+\end{tabular}
+\ \\
+Hier stehen eth0, lo und wlan0 für Namen der Aktiven Netzwerk Interfaces\\
+\\
+Argumente: \\
+\\
+$ifconfig$ $-a$ : zeigt alle Interfaces, nicht nur die aktiven an\\
+$ifconfig$ "$name"$ : nur anzeige des Netzwerks mit diesem Namen\\
+$ifconfig$ "$name"$ $up$ : aktiviert dieses Netzwerk Interface, falls nicht aktiv\\
+$ifconfig$ "$name"$ $down$ : deaktiviert dieses Netzwerk Interface\\
+$ifconfig$ "$name"$ $169.0.0.10$ $netmask$ $255.255.255.224$ $broadcast$ $172.16.25.63$: weist dem Interface diese IP Adresse, Netzwerkmaske und Broadcast zu\\
+% -------------
+\end{document}
