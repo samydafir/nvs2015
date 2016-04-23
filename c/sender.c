@@ -11,6 +11,7 @@ Please read "Dokumentation_und_Auswertung.pdf" for more precise information
 #include <stdlib.h>
 #include <strings.h>
 #include <string.h>
+#include <zlib.h>
 #include "sender.h"
 
 int main(int argc, char *argv[]){
@@ -22,15 +23,17 @@ int main(int argc, char *argv[]){
     }
 
     //declare and define required local vars
-    int sock, amt_sent, sent, total_pack_size, payload, sockaddr_len;
+    int sock, amt_sent, sent, total_pack_size, payload, sockaddr_len, i;
     struct sockaddr_in receiver;
     struct hostent *host;
     struct timeval before, after;
     payload = atoi(argv[4]);
-    total_pack_size = payload + 5;
-    char buffer[total_pack_size];
-    char* msg;
-    msg = create_msg(payload);
+    total_pack_size = payload + 1;
+    int buffer[total_pack_size];
+    int msg[payload];
+    for(i = 0; i < payload; i++){
+        msg[i] = 9;
+    }
     int amt_send;
     amt_send = atoi(argv[3]);
 
@@ -56,16 +59,18 @@ int main(int argc, char *argv[]){
         //zero out buffer
         bzero(buffer, total_pack_size);
         //set message to be sent
-        sprintf(buffer, "%d %s", amt_sent,msg   );
+        buffer[0] = amt_send;
+        for(i = 0; i < payload; i++){
+            buffer[i+1] = 9;
+        }
         //send message in buffer as datagram and handle error
-        sent = sendto(sock, buffer, strlen(buffer), 0, (struct sockaddr *)&receiver, sizeof(struct sockaddr_in));
+        sent = sendto(sock, buffer, sizeof(buffer), 0, (struct sockaddr *)&receiver, sizeof(struct sockaddr_in));
         if(sent == 0){
             handle_error("package not sent successfully");
         }
     }
     gettimeofday(&after, NULL);
-    evaluate(before,after,payload,amt_send);
-    free(msg);
+    evaluate(before,after,total_pack_size,amt_send);
     return 0;
 }
 
@@ -74,23 +79,13 @@ evaluates the send-operation. calculates transfer-speed and prints it.
 */
 void evaluate(struct timeval before, struct timeval after, int msg_size, int amt){
     time_t duration = (after.tv_usec - before.tv_usec)/1000 +(after.tv_sec - before.tv_sec)*1000;
-    int total_size = msg_size * amt;
-    double speed = total_size/duration;
-    printf("%d packets sent\n", amt);
-    printf("%.2f KB/s\n", speed);
+    int total_size = msg_size * amt * 4;
+    if(duration != 0.0){
+        double speed = total_size/duration;
+        printf("%d packets sent\n", amt);
+        printf("%.2f KB/s\n", speed);
+    }
 }
-    
-/*
-creates a char array (string) of given length which we later use in all our
-messages to measure the message-size's impact on out transfer speed
-*/
-char* create_msg(int length){
-    char *str = malloc(length);
-    memset(str, 'a', length-1);
-    str[length-1] = '\0';
-    return str;
-    
-} 
 
 /*
 handle_error takes a error message as pointer to a char sequence prints it and exits the application

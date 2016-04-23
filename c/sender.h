@@ -3,5 +3,5 @@
 
 void handle_error(char *message);
 void evaluate(struct timeval before, struct timeval after, int msg_size, int amt);
-char* create_msg(int length);
+int* create_msg(int length);
 #endif /* SENDER_H */
