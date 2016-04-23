@@ -27,8 +27,8 @@ int main(int argc, char *argv[]){
     struct timeval timeout, before, after;
     bzero(&receiver, sizeof(receiver));
     payload = atoi(argv[4]);
-    total_pack_size = payload + 5;
-    char buffer[total_pack_size]; 
+    total_pack_size = payload + 1;
+    int buffer[total_pack_size]; 
     pack_exp = atoi(argv[3]);
     
     //create udp ipv4 socket
@@ -56,7 +56,7 @@ int main(int argc, char *argv[]){
 
     //enter while loop and receive packets from the socket and save them into the buffer
     rec_cnt = 0;
-    if((recvfrom(sock,buffer,total_pack_size,0,(struct sockaddr*)&sender,&sockaddr_len)) >= 0){
+    if((recvfrom(sock,buffer,sizeof(buffer),0,(struct sockaddr*)&sender,&sockaddr_len)) >= 0){
         rec_cnt++;
     }
 
