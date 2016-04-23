@@ -3,6 +3,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.zip.CRC32;
 
 /**
@@ -66,12 +67,15 @@ public class Sender {
 		beforeTime = System.currentTimeMillis();
 		for(int i = 0; i < sendAmt; i++){
 			buffer.putInt(i);
-			if(i < sendAmt -1){
+			/*If current packet is not the last packet: put the whole message into the bytebuffer and use it
+			 * to update the checksum. Otherwise: put message up to length - 4 into the buffer, to leave space
+			 * for the checksum + add checksum.*/
+			if(i < sendAmt - 1){
 				buffer.put(message);
 				checksum.update(buffer.array());
 			}else{
-				buffer.put(message,0,message.length-4);
-				checksum.update(buffer.array());
+				buffer.put(Arrays.copyOfRange(message, 0, message.length-4));
+				checksum.update(Arrays.copyOfRange(buffer.array(), 0, buffer.array().length-4));
 				buffer.putInt((int) checksum.getValue());
 			}
 			DatagramPacket packet = new DatagramPacket(buffer.array(), buffer.array().length, address, receiverSocket);

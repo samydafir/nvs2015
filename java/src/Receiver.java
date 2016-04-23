@@ -15,8 +15,6 @@ import java.util.zip.CRC32;
  */
 public class Receiver {
     
-	//setting MAXSIZE to 100
-    private final static int SIZE = 2000;
     /**
      * main handles wrong numbers of cmd-arguments. Wrong numbers lead to a message describing usage being
      * issued, otherwise receive() is called. IOExceptions thrown in the receive-method are handled here.
@@ -25,8 +23,8 @@ public class Receiver {
      * 	args[1] timeout for the receiving socket
      */
 	public static void main(String[] args){
-		if(args.length != 4 && args.length != 3){
-			System.out.println("Usage: java Receiver <port number> <receiving timeout in ms> <expected packets> <-v for verbose>");
+		if(args.length != 5 && args.length != 4){
+			System.out.println("Usage: java Receiver <port number> <receiving timeout in ms> <expected packets> <payload size> <-v for verbose>");
 		}else{
 			try{
 				receive(args);
@@ -45,8 +43,10 @@ public class Receiver {
 	private static void receive(String[] args)throws IOException{
         long beforeTime = 0;
         long afterTime = 0;
+        //+5 for sequence number and space
+        int size = Integer.parseInt(args[3]) + 5;
 		//buffer to hold the received message represented as byte-array
-		byte[] buffer = new byte[SIZE];
+		byte[] buffer = new byte[size];
 		//create socket with port-number specified in args[0].
 		DatagramSocket socket = new DatagramSocket(Integer.parseInt(args[0]));
 		//set socket-timeout to terminate following loop, if no more packets received
@@ -56,13 +56,13 @@ public class Receiver {
 		//get expected amount  of packets
         int expec = Integer.parseInt(args[2]);
 
-        CRC32 check = new CRC32();
+        CRC32 checksum = new CRC32();
 		int packetCount = 0;
 		try{
 			//infinite loop to receive packets. Only terminated if no packets arrive for a certain specified time
 			//e.g. if a connection problem occurs or no more packets are sent by the Sender.
 			socket.receive(packet);
-			check.update(packet.getData());
+			checksum.update(packet.getData());
 			beforeTime = System.currentTimeMillis();
 			packetCount++;
 			while(true){
@@ -70,12 +70,15 @@ public class Receiver {
 				afterTime = System.currentTimeMillis();
 				packetCount++;
 				byte[] message = packet.getData();
+				/*If packet is not the last packet: use whole packet content to update checksum
+				If last packet: dont use last 4 bytes --> contein checksum itself*/
 				if(packetCount < expec){
-					check.update(message);
+					checksum.update(message);
 				}else{
-					check.update(Arrays.copyOfRange(message, 0, message.length-4));
+					checksum.update(Arrays.copyOfRange(message, 0, message.length-4));
 				}
-				if(args[3] != null && args[3].equals("-v")){
+				//optional verbose mode. prints packet content
+				if(args.length == 5 && args[4].equals("-v")){
 					print(packet,packetCount,expec);
 				}
 			}
@@ -83,7 +86,7 @@ public class Receiver {
 		//packets is printed.
 		}catch(SocketTimeoutException e){}
 		socket.close();
-		System.out.println(check.getValue());
+		System.out.println(checksum.getValue());
 		evaluate(afterTime, beforeTime, packet.getLength()-5, packetCount);
 	}
 	
@@ -108,6 +111,12 @@ public class Receiver {
 		
 	}
 	
+	/**
+	 * print print the content of a packet
+	 * @param packet packet to print
+	 * @param current current packetCount
+	 * @param expec expected number of packets
+	 */
 	private static void print(DatagramPacket packet, int current, int expec){
 		byte[] message = packet.getData();
 		ByteBuffer buf = ByteBuffer.wrap(message);
@@ -115,16 +124,23 @@ public class Receiver {
 		if(current < expec){
 			System.out.println(new String(message,4,message.length-4));
 		}else{
-			System.out.println(new String(message,4,message.length-8));
-			//System.out.println(buf.getInt(buf.array().length-4));
+			System.out.print(new String(message,4,message.length-8));
+			System.out.println(getUnsigned(buf.getInt(buf.array().length-4)));
 		}
 	}
 	
+	/**
+	 * CRC returns a long value storing a 32 bit unsigned integer. Since java does not support
+	 * unsigned types, we interpret the integer checksum in out last package as unsigned and
+	 * assign it to a long value.
+	 * @param checksum
+	 * @return checksum interpreted as unsigned value.
+	 */
 	private static long getUnsigned(int checksum){
 		if(checksum >= 0){
 			return (long)checksum;
 		}else{
-			return (-Integer.MIN_VALUE) + (checksum - Integer.MIN_VALUE);
+			return ((long)(checksum + (Integer.MAX_VALUE + 1)) + Integer.MAX_VALUE + 1);
 			
 		}
 		
