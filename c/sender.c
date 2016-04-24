@@ -57,8 +57,7 @@ int main(int argc, char *argv[]){
     gettimeofday(&before, NULL);
     //start sending
     for(amt_sent = 0; amt_sent < amt_send; amt_sent++){
-        //zero out buffer
-        //set message to be sent
+        //set sequence number
         buffer[0] = amt_sent;
         //check cases
         if(amt_sent < amt_send - 1){
@@ -74,7 +73,6 @@ int main(int argc, char *argv[]){
         }
     }
     gettimeofday(&after, NULL);
-    printf("crc32-checksum: %u\n", crc);
     evaluate(before,after,total_pack_size,amt_send,crc);
     return 0;
 }
@@ -85,7 +83,7 @@ evaluates the send-operation. calculates transfer-speed and prints it.
 void evaluate(struct timeval before, struct timeval after, int msg_size, int amt, uint crc){
     time_t duration = (after.tv_usec - before.tv_usec)/1000 +(after.tv_sec - before.tv_sec)*1000;
     int total_size = msg_size * amt * 4;
-    //printf("crc32-checksum: %u\n", crc);
+    printf("crc32-checksum: %u\n", crc);
     printf("%d packets sent\n", amt);
     if(duration != 0.0){
         double speed = total_size/duration;
