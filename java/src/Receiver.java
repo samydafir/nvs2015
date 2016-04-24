@@ -44,9 +44,9 @@ public class Receiver {
         long beforeTime = 0;
         long afterTime = 0;
         //+5 for sequence number and space
-        int size = Integer.parseInt(args[3]) + 5;
+        int size = Integer.parseInt(args[3]) * 4;
 		//buffer to hold the received message represented as byte-array
-		byte[] buffer = new byte[size];
+		byte[] buffer = new byte[size + 4];
 		//create socket with port-number specified in args[0].
 		DatagramSocket socket = new DatagramSocket(Integer.parseInt(args[0]));
 		//set socket-timeout to terminate following loop, if no more packets received
@@ -86,8 +86,8 @@ public class Receiver {
 		//packets is printed.
 		}catch(SocketTimeoutException e){}
 		socket.close();
-		System.out.println(checksum.getValue());
-		evaluate(afterTime, beforeTime, packet.getLength()-5, packetCount);
+		System.out.println("checksum: " + checksum.getValue());
+		evaluate(afterTime, beforeTime, packet.getLength(), packetCount);
 	}
 	
 	
@@ -120,13 +120,18 @@ public class Receiver {
 	private static void print(DatagramPacket packet, int current, int expec){
 		byte[] message = packet.getData();
 		ByteBuffer buf = ByteBuffer.wrap(message);
-		System.out.print(buf.getInt());
 		if(current < expec){
-			System.out.println(new String(message,4,message.length-4));
+			while(buf.hasRemaining()){
+				System.out.print(buf.getInt());
+			}
 		}else{
-			System.out.print(new String(message,4,message.length-8));
-			System.out.println(getUnsigned(buf.getInt(buf.array().length-4)));
+			while(buf.remaining() > 4){
+				System.out.print(buf.getInt());
+			}
+			System.out.println();
+			System.out.println("checksum: " + getUnsigned(buf.getInt(buf.array().length-4)));
 		}
+		System.out.println();
 	}
 	
 	/**
@@ -143,7 +148,6 @@ public class Receiver {
 			return ((long)(checksum + (Integer.MAX_VALUE + 1)) + Integer.MAX_VALUE + 1);
 			
 		}
-		
 	}
 }
 

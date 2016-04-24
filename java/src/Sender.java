@@ -56,8 +56,8 @@ public class Sender {
 		CRC32 checksum = new CRC32();
 		InetAddress address = InetAddress.getByName(args[0]);
 		int receiverSocket = Integer.parseInt(args[1]);
-		int size = Integer.parseInt(args[3]);
-		ByteBuffer buffer = ByteBuffer.allocate(size + 5);
+		int size = Integer.parseInt(args[3]) * 4;
+		ByteBuffer buffer = ByteBuffer.allocate(size + 4);
 		byte[] message = getPayload(size);
 		//DatagramPacket checkPacket = new DatagramPacket(buffer, buffer.length);
 		int sendAmt = Integer.parseInt(args[2]);
@@ -84,9 +84,9 @@ public class Sender {
 		}
 		afterTime = System.currentTimeMillis();
 		socket.close();
-		//+5 for header size
-		evaluate(afterTime, beforeTime, size+5, sendAmt);
-		System.out.println(checksum.getValue());
+		//+4 for one integer --> sequence number
+		evaluate(afterTime, beforeTime, size + 4, sendAmt);
+		System.out.println("checksum: " + checksum.getValue());
 	}
 	
 	/**
@@ -95,12 +95,11 @@ public class Sender {
 	 * @return string of given length
 	 */
 	private static byte[] getPayload(int length){
-		StringBuilder sb = new StringBuilder();
-		sb.append(' ');
-		for(int i = 0; i < length; i++){
-			sb.append("a");
+		ByteBuffer bb = ByteBuffer.allocate(length);
+		for(int i = 0; i < length/4; i++){
+			bb.putInt(9);
 		}
-		return sb.toString().getBytes();
+		return bb.array();
 		
 	}
 	
