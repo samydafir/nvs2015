@@ -11,6 +11,7 @@ Please read "Dokumentation_und_Auswertung.pdf" for more precise information
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <zlib.h>
 #include "receiver.h"
 
 
@@ -22,12 +23,14 @@ int main(int argc, char *argv[]){
         handle_error("Usage: ./receiver <port> <timeout in s> <number of ecpected packets> <packet payload size>");
     }
     //required local var declaration
-    int sock, sockaddr_len, one, t_out, rec_cnt, payload, total_pack_size, pack_exp;
+    int sock, sockaddr_len, one, t_out, rec_cnt, payload, total_pack_size, pack_exp, i;
     struct sockaddr_in receiver, sender;
     struct timeval timeout, before, after;
     bzero(&receiver, sizeof(receiver));
     payload = atoi(argv[4]);
     total_pack_size = payload + 1;
+    uint crc;
+    crc = 0;
     int buffer[total_pack_size]; 
     pack_exp = atoi(argv[3]);
     
@@ -57,6 +60,7 @@ int main(int argc, char *argv[]){
     //enter while loop and receive packets from the socket and save them into the buffer
     rec_cnt = 0;
     if((recvfrom(sock,buffer,sizeof(buffer),0,(struct sockaddr*)&sender,&sockaddr_len)) >= 0){
+        crc = crc32(crc, (const void*)buffer, total_pack_size);
         rec_cnt++;
     }
 
@@ -69,26 +73,37 @@ int main(int argc, char *argv[]){
     //Set starting time. Does not take the time for receiving the first packet into account.
     gettimeofday(&before, NULL);
     while(rec_cnt < pack_exp && recvfrom(sock,buffer,total_pack_size,0,(struct sockaddr*)&sender,&sockaddr_len) >= 0){
-        gettimeofday(&after, NULL);
         rec_cnt++;
+        if(rec_cnt < pack_exp - 1){
+            crc = crc32(crc, (const void*)buffer, total_pack_size);
+        }else{
+            crc = crc32(crc, (const void*)buffer, total_pack_size - 1);
+        }
+        gettimeofday(&after, NULL);
     }
     //timestamp is only refreshed if all packets were received
     if(rec_cnt == pack_exp){    
         gettimeofday(&after, NULL);
-    }    
-    evaluate(before, after, payload, rec_cnt);
+    }
+    printf("crc32-checksum: %u\n", crc);
+    evaluate(before, after, payload, rec_cnt,crc);
     close(sock);
 }
 
 /*
 evaluates the receive-operation. calculates transfer-speed and prints it.
 */
-void evaluate(struct timeval before, struct timeval after, int msg_size, int amt){
+void evaluate(struct timeval before, struct timeval after, int msg_size, int amt, uint crc){
     time_t duration = (after.tv_usec - before.tv_usec)/1000 +(after.tv_sec - before.tv_sec)*1000;
-    int total_size = msg_size * amt;
-    double speed = total_size/duration;
+    int total_size = msg_size * amt * 4;
+   // printf("crc32-checksum: %u\n", crc);
     printf("%d packets received\n", amt);
-    printf("%.2f KB/s\n", speed);
+    if(duration != 0.0){
+        double speed = total_size/duration;
+        printf("%.2f KB/s\n", speed);
+    }else{
+        handle_error("measured time too short. Try sending more packets");
+    }
 }
 
 /*

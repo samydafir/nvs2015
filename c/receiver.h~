@@ -2,6 +2,6 @@
 #define RECEIVER_H
 
 void handle_error(char *message);
-void evaluate(struct timeval before, struct timeval after, int msg_size, int amt)
+void evaluate(struct timeval before, struct timeval after, int msg_size, int amt);
 
 #endif /* RECEIVER_H */
