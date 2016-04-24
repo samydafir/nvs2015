@@ -1,5 +1,7 @@
-/* SENDER */
-
+/*
+SENDER 
+Please read "Dokumentation_und_Auswertung.pdf" for more precise information
+*/
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <stdio.h>
@@ -9,6 +11,8 @@
 #include <stdlib.h>
 #include <strings.h>
 #include <string.h>
+#include <zlib.h>
+#include <limits.h>
 #include "sender.h"
 
 int main(int argc, char *argv[]){
@@ -20,16 +24,18 @@ int main(int argc, char *argv[]){
     }
 
     //declare and define required local vars
-    int sock, amt_sent, sent, total_pack_size, payload, sockaddr_len;
+    int sock, amt_send, amt_sent, sent, total_pack_size, payload, sockaddr_len, i;
     struct sockaddr_in receiver;
     struct hostent *host;
     struct timeval before, after;
+    uint crc;
+    crc = 0;
     payload = atoi(argv[4]);
-    total_pack_size = payload + 5;
-    char buffer[total_pack_size];
-    char* msg;
-    msg = create_msg(payload);
-    int amt_send;
+    total_pack_size = payload + 1;
+    int buffer[total_pack_size];
+    for(i = 1; i < total_pack_size; i++){
+        buffer[i] = 9;
+    }
     amt_send = atoi(argv[3]);
 
     //create udp ipv4 socket and handle creation error
@@ -47,55 +53,47 @@ int main(int argc, char *argv[]){
 
     //copy host address into sockaddr_in struct -> add to addr info and set port
     bcopy((char *)host->h_addr, (char *)&receiver.sin_addr, host->h_length);
-    receiver.sin_port = htons(atoi(argv[2]));    
+    receiver.sin_port = htons(atoi(argv[2]));
     gettimeofday(&before, NULL);
+    //start sending
     for(amt_sent = 0; amt_sent < amt_send; amt_sent++){
         //zero out buffer
-        bzero(buffer, total_pack_size);
         //set message to be sent
-        sprintf(buffer, "%d %s", amt_sent,msg   );
+        buffer[0] = amt_sent;
+        //check cases
+        if(amt_sent < amt_send - 1){
+            crc = crc32(crc, (const void*)buffer, total_pack_size);
+        }else{
+            crc = crc32(crc, (const void*)buffer, total_pack_size - 1);
+            buffer[total_pack_size - 1] = crc;
+        }
         //send message in buffer as datagram and handle error
-        sent = sendto(sock, buffer, strlen(buffer), 0, (struct sockaddr *)&receiver, sizeof(struct sockaddr_in));
+        sent = sendto(sock, buffer, sizeof(buffer), 0, (struct sockaddr *)&receiver, sizeof(struct sockaddr_in));
         if(sent == 0){
             handle_error("package not sent successfully");
         }
     }
     gettimeofday(&after, NULL);
-    evaluate(before,after,payload,amt_send);
-    free(msg);
+    evaluate(before,after,total_pack_size,amt_send,crc);
     return 0;
 }
 
 /*
-evaluates the send-operation. calculates transfer-speed and prints it. takes only distinct packets
-into account: e.g. if we sent 1000 packets only recognizes 1000 packets as valid user information.
-packets sent more than one are only counted twice, thus making measurment objective and expressive
+evaluates the send-operation. calculates transfer-speed and prints it.
 */
-void evaluate(struct timeval before, struct timeval after, int msg_size, int amt){
+void evaluate(struct timeval before, struct timeval after, int msg_size, int amt, uint crc){
     time_t duration = (after.tv_usec - before.tv_usec)/1000 +(after.tv_sec - before.tv_sec)*1000;
-    printf("%ld\n", (long)duration);
-    int total_size = msg_size * amt;
-    printf("%d\n",total_size);
-    double speed = total_size/duration;
+    int total_size = msg_size * amt * 4;
+    //printf("crc32-checksum: %u\n", crc);
     printf("%d packets sent\n", amt);
-    printf("%.2f KB/s\n", speed);
+    if(duration != 0.0){
+        double speed = total_size/duration;
+        printf("%.2f KB/s\n", speed);
+    }else{
+        handle_error("measured time too short. Try sending more packets");
+    }
 }
-    
-/*
-creates a char array (string) of given length which we later use in all our
-messages to measure the message-size's impact on out transfer speed
-*/
-char* create_msg(int length){
-    char *str = malloc(length);
-    memset(str, 'a', length-1);
-    str[length-1] = '\0';
-    return str;
-    
-} 
 
-/*
-handle_error takes a error message as pointer to a char sequence prints it and exits the application
-*/
 void handle_error(char *message){
     puts(message);
     exit(1);

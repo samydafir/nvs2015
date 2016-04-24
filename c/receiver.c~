@@ -1,3 +1,7 @@
+/*
+RECEIVER 
+Please read "Dokumentation_und_Auswertung.pdf" for more precise information
+*/
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/time.h>
@@ -7,6 +11,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <zlib.h>
 #include "receiver.h"
 
 
@@ -17,14 +22,16 @@ int main(int argc, char *argv[]){
     if(argc != 5){
         handle_error("Usage: ./receiver <port> <timeout in s> <number of ecpected packets> <packet payload size>");
     }
-    //requied local var declaration
-    int sock, sockaddr_len, one, t_out, rec_cnt, payload, total_pack_size, pack_exp;
+    //required local var declaration
+    int sock, sockaddr_len, one, t_out, rec_cnt, payload, total_pack_size, pack_exp, i;
     struct sockaddr_in receiver, sender;
     struct timeval timeout, before, after;
     bzero(&receiver, sizeof(receiver));
     payload = atoi(argv[4]);
-    total_pack_size = payload + 5;
-    char buffer[total_pack_size]; 
+    total_pack_size = payload + 1;
+    uint crc;
+    crc = 0;
+    int buffer[total_pack_size]; 
     pack_exp = atoi(argv[3]);
     
     //create udp ipv4 socket
@@ -38,19 +45,22 @@ int main(int argc, char *argv[]){
     receiver.sin_addr.s_addr = htonl(INADDR_ANY);
     receiver.sin_port = htons(atoi(argv[1]));
 
-    //configure timeout for socket
+    /*configure timeout for socket. Only needed to terminate if at least
+    one packet was not received */
     timeout.tv_sec = atoi(argv[2]);
     timeout.tv_usec = 0;
 
     //bind socket to created address
     bind(sock,(struct sockaddr*)&receiver,sizeof(receiver));
 
-    //calculate sizeof sockaddr struct
+    /*calculate size of sockaddr struct. Saved into a variable due to recvfrom requires
+    the memory address where sizeof(sockaddr*) is saved*/
     sockaddr_len = sizeof(struct sockaddr_in);
 
     //enter while loop and receive packets from the socket and save them into the buffer
     rec_cnt = 0;
-    if((recvfrom(sock,buffer,total_pack_size,0,(struct sockaddr*)&sender,&sockaddr_len)) >= 0){
+    if((recvfrom(sock,buffer,sizeof(buffer),0,(struct sockaddr*)&sender,&sockaddr_len)) >= 0){
+        crc = crc32(crc, (const void*)buffer, total_pack_size);
         rec_cnt++;
     }
 
@@ -63,59 +73,43 @@ int main(int argc, char *argv[]){
     //Set starting time. Does not take the time for receiving the first packet into account.
     gettimeofday(&before, NULL);
     while(rec_cnt < pack_exp && recvfrom(sock,buffer,total_pack_size,0,(struct sockaddr*)&sender,&sockaddr_len) >= 0){
-        gettimeofday(&after, NULL);
         rec_cnt++;
+        if(rec_cnt < pack_exp - 1){
+            crc = crc32(crc, (const void*)buffer, total_pack_size);
+        }else{
+            crc = crc32(crc, (const void*)buffer, total_pack_size - 1);
+        }
+        gettimeofday(&after, NULL);
     }
+    //timestamp is only refreshed if all packets were received
     if(rec_cnt == pack_exp){    
         gettimeofday(&after, NULL);
-    }    
-    evaluate(before, after, payload, rec_cnt);
+    }
+    printf("crc32-checksum: %u\n", crc);
+    evaluate(before, after, payload, rec_cnt,crc);
     close(sock);
 }
 
-
-void evaluate(struct timeval before, struct timeval after, int msg_size, int amt){
+/*
+evaluates the receive-operation. calculates transfer-speed and prints it.
+*/
+void evaluate(struct timeval before, struct timeval after, int msg_size, int amt, uint crc){
     time_t duration = (after.tv_usec - before.tv_usec)/1000 +(after.tv_sec - before.tv_sec)*1000;
-    printf("%ld\n", (long)duration);
-    int total_size = msg_size * amt;
-    printf("%d\n",total_size);
-    double speed = total_size/duration;
+    int total_size = msg_size * amt * 4;
+   // printf("crc32-checksum: %u\n", crc);
     printf("%d packets received\n", amt);
-    printf("%.2f KB/s\n", speed);
-
+    if(duration != 0.0){
+        double speed = total_size/duration;
+        printf("%.2f KB/s\n", speed);
+    }else{
+        handle_error("measured time too short. Try sending more packets");
+    }
 }
 
+/*
+handles errors. Prints error-message and quits application
+*/
 void handle_error(char *message){
     puts(message);
     exit(1);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
