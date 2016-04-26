@@ -12,7 +12,6 @@ Please read "Dokumentation_und_Auswertung.pdf" for more precise information
 #include <strings.h>
 #include <string.h>
 #include <zlib.h>
-#include <limits.h>
 #include "sender.h"
 
 int main(int argc, char *argv[]){
@@ -33,8 +32,8 @@ int main(int argc, char *argv[]){
     payload = atoi(argv[4]);
     total_pack_size = payload + 1;
     int buffer[total_pack_size];
-    for(i = 1; i < total_pack_size; i++){
-        buffer[i] = 9;
+    for(i = 0; i < total_pack_size; i++){
+        buffer[i] = htonl(9);
     }
     amt_send = atoi(argv[3]);
 
@@ -58,13 +57,14 @@ int main(int argc, char *argv[]){
     //start sending
     for(amt_sent = 0; amt_sent < amt_send; amt_sent++){
         //set sequence number
-        buffer[0] = amt_sent;
+        buffer[0] = htonl(amt_sent);
         //check cases
         if(amt_sent < amt_send - 1){
             crc = crc32(crc, (const void*)buffer, total_pack_size);
         }else{
             crc = crc32(crc, (const void*)buffer, total_pack_size - 1);
-            buffer[total_pack_size - 1] = crc;
+            buffer[total_pack_size - 1] = htonl(crc);
+            printf("%u", buffer[total_pack_size]);
         }
         //send message in buffer as datagram and handle error
         sent = sendto(sock, buffer, sizeof(buffer), 0, (struct sockaddr *)&receiver, sizeof(struct sockaddr_in));
@@ -81,13 +81,13 @@ int main(int argc, char *argv[]){
 evaluates the send-operation. calculates transfer-speed and prints it.
 */
 void evaluate(struct timeval before, struct timeval after, int msg_size, int amt, uint crc){
-    time_t duration = (after.tv_usec - before.tv_usec)/1000 +(after.tv_sec - before.tv_sec)*1000;
+    time_t duration = (after.tv_usec - before.tv_usec) +(after.tv_sec - before.tv_sec)*1000000;
     int total_size = msg_size * amt * 4;
     printf("crc32-checksum: %u\n", crc);
     printf("%d packets sent\n", amt);
     if(duration != 0.0){
         double speed = total_size/duration;
-        printf("%.2f KB/s\n", speed);
+        printf("%.3f MB/s\n", speed);
     }else{
         handle_error("measured time too short. Try sending more packets");
     }
