@@ -10,12 +10,16 @@
 \title{NVS PS 2016: Programmieraufgabe}
 \author{Thomas Samy Dafir, Dominik Baumgartner, Vivien Wallner}
 \date{}
+
 \begin{document}
 	\maketitle
-	\section{Aufgabe}
+	\tableofcontents
+	\newpage
+	
+	\section{Aufgabe 1}
 	Erstellen zweier Programme, von denen eines als Sender, das andere als Empfänger agiert. Der Sender soll mittels UDP Pakete an den Empfänger senden. Dabei sollen die ersten vier Byte jeder Nachricht eine fortlaufende Nummer enthalten.
 
-	\section{Dokumentation (Java-Version)}
+	\section{Dokumentation (Java-Version), Abgabe 1}
 	Dokumentation: siehe auch kommentierten Sourcecode
 	
 	\subsection{Funktion allgemein}
@@ -67,7 +71,7 @@
 
 	
 	\newpage
-	\section{Dokumentation (C-Version)}
+	\section{Dokumentation (C-Version), Abgabe 1}
 	Dokumentation: siehe auch kommentierten Sourcecode
 	
 	\subsection{Funktion allgemein}
@@ -123,8 +127,8 @@
 	\subsection{Auswertung}
 	Für die Auswertung werden die Anfangs- und Endzeitpunkte, sowie Anzahl und Größe der Pakete festgehalten. Die Auswertung erfolgt im Sender, wie auch im Empfänger mit der $evaluate$-Funktion. Diese berechnet aus der Paketgröße in
 	Kombination mit der Paketanzahl die Gesamtgröße und mittels Division durch die benötigte Zeit die Übertragungsgeschwindigkeit. Diese Auswertungen sind als Kennlinien im Kapitel Auswertung einzusehen.
-	
-	\section{Auswertung}
+	\newpage
+	\section{Auswertung, Abgabe 1}
 	Ausgewertet wird in hier der Verlauf der Übertragungsgeschwindigkeit als Funktion der Paketgröße. Es wurden jeweils drei Kennlinien erstellt, die die Verläufe beim Senden von 100, 1000 und 10000 Paketen repräsentieren. Die Werte für jede Kennlinie wurden bis zur maximalen Paketgröße aufgenommen, bei der noch keine Paketverluste auftreten.
 	Interessant ist, dass die C-Version trotz annähernd gleicher Implementierung ohne überflüssige Operationen um ein vielfaches schneller empfängt als die Java-Version.
 		
@@ -142,6 +146,45 @@
 	Als interessantes Detail fällt auf, dass ein Senden vom C-Sender zum Java-Empfänger sehr schnell Verluste aufweist, da dieser mit der hohe Sendegeschwindigkeit nicht fertig wird.
 	Erwartungsgemäß gibt es dieses Problem beim Senden vom Java-Sender zum C-Empfänger nicht.
 	Dies bestätigt die Annahme, dass der Java-Empfänger um ein Vielfaches langsamer ist als sein C Pendant.
+	
+	\section{Aufgabe 2}
+	Beide Programme modifizieren, sodass die letzten 4 Byte des letzten Pakets eine CRC32 checksum über alle Pakete enthält, die dann im Empfänger überprüft werden kann. Zusätzlich sollen die Pakete jetzt über LAN gesendet und die Ergebnisse (Geschwindigkeit, verlorene Pakete) analysiert werden.
+	
+	
+	\section{Änderungen, Abgabe 2}
+	Aufgrund der Schwierigkeit, in C über UDP eine Nachricht zu versenden, die sowohl Characters als auch Integers enthält, wurde die zu sendende Nachricht in beiden Programmversionen auf reine Integer geändert. Dies ermöglicht es, Sequenznummer, Nachricht und CRC checksum unkompliziert zusammenzuhängen. Weiters musste wegen dieser Änderungen die Eingabe und Auswertung geändert werden. Der Paketgrößen-cmd-Parameter erwartet nun die Größe als Anzahl von Integers. Da die C Version nun mit Integers arbeitet, wurde bei der Berechnung der absolut gesendeten/empfangenen Daten der Faktor 4 eingeführt, um dies zu berücksichtigen.
+	\subsection{Java}
+	In Java wird zur einfacheren Handhabung ein ByteBuffer verwendet. Dieser wird mittels $putInt$ mit Integer-Werten gefüllt. Schließlich kann mit $ByteBuffer.array$ ein Byte-Array extrahiert werden, welchen dann in ein UDP-Paket verpackt und versendet wird.
+	Der Empfänger erhält nun ein Byte-Array, das mittels $wrap$ einem ByteBuffer zugewiesen wird. Nun können Integer-Werte einfach mittels $getInt$ extrahiert werden.
+	Die CRC-Berechnung wird in Java mit einer Instanz der Klasse CRC32 realisiert. Für jedes zu sendende Paket (Byte-Array) wird $update(Byte-Array)$ aufgerufen und damit der CRC-Wert aktualisiert. Das letzte Paket wird nur bis zur vorletzten Stelle des Byte-Arrays verwendet, um den CRC zu aktualisieren. Anschließend wird der CRC-Wert an die letzte Stelle geschrieben und das Paket versendet.
+	Die CRC Checksum ist ein long-Wert, dessen 32 niederwertigste Bits verwendet werden. Da der CRC-Wert aber als Integer versendet wird und somit eine  1 an der ersten Stelle eine negative Zahl ergeben würde, muss der 32-bit signed Integer-Wert jetzt als unsigned-Integer interpretiert werden. Dies geschieht in der $getUnsigned$-Methode, die dann den ursprünglichen, positiven long-CRC-Wert zurückgibt.
+	
+	\subsection{C}
+	In C wird für die Berechnung des CRC32 Wertes die $crc32$-Funktion aus der zlib-Libary verwendet. In C wird jetzt ein int-Array versendet. Dafür wird zuerst ein int Array gegebener Länge erstellt und mit Zahlen gefüllt. In jedem Sendeschritt wird nun nur die erste Stelle durch die Sequenznummer ersetzt. Das fertige, zu versendende Array wird dann verwendet, um die CRC Checksum zu aktualisieren. Beim letzten Paket wird wiederum (analog zur Java-Version) das Array ohne die letzte Stelle verwendet, um die Checksum zu aktualisieren. Diese wird dann an die letzte Stelle geschrieben und das Array als Paket versendet.
+	Der Empfänger schreibt wiederum jedes ankommende Paket in ein Buffer-Array und verwendet den Paketinhalt (Int-Array), um die Checksum zu aktualisieren. Das letzte Paket wird natürlich ohne die letzte Stelle verwendet, die ja die von Sender berechnete Checksum enthält. In C muss die Checksum nicht extra als unsigned interpretiert werden, da C (anders als Java) unsigned Datentypen unterstützt.
+	Im C Programm wurde auch ein Berechnungsfehler behoben, der dazu führte, dass kurze Übertragungszeiten nicht gemessen werden konnten. Um dies zu erreichen, wird die Übertragungszeit jetzt in Mikrosekunden gemessen und nicht wie bisher in Millisekunden umgerechnet (dies führte zu einigen 0-Werten und machte damit eine Berechnung der Geschwindigkeit unmöglich).
+	
+	\section{Auswertung, Abgabe 2}
+	
+	\subsection{Java-Java}
+	Das Senden von Packets über LAN vom Java-Sender zum Java-Empfänger gestaltet sich ähnlich dem Senden über die lokale Schnittstelle. Eine Anomalie fällt jedoch auf: Auch nach mehrmaligem Wiederholen der Tests befindet sich die Kennlinie für 1000 Pakete unter der für 100 Pakete. Dieses Verhalten lässt sich kaum erklären, da das Senden von 1000 Paketen eigentlich zwischen den Geschwindigkeiten für 100 und 10000 Pakete liegen müsste. Interessant ist auch die Betrachtung der Verlorenen Pakete. Während beim Übertragen über localhost fast nie ein Paket verloren ging, gehen hier nun sehr viele Pakete verloren. Besonders fällt das bei den Werten für 1000 Pakete auf.\\
+	\includegraphics[width=\textwidth]{images_ass2/java2java1.png}\\
+	\\\includegraphics[width=\textwidth]{images_ass2/java2java2.png}
+	\subsection{C-C}
+	Beim Senden von C nach C ist das Verhalten wiederum dem aus der vorherigen Aufgabe (localhost) sehr ähnlich. Es fällt auf, dass hier kein einziges Paket verloren geht. Der Geschwindigkeitszuwachs verhält sich gleich, wie beim senden über localhost.\\
+	\\\includegraphics[width=\textwidth]{images_ass2/c2c1.png}\\
+	\\\includegraphics[width=\textwidth]{images_ass2/c2c2.png}
+	
+	\subsection{Java-C}
+	Beim Senden von Java nach C ist wiederum ein annähernd linearer Verlauf zu beobachten. Hier befinden sich die Werte für 1000 Pakete jedoch zwischen denen für 100 und 10000. Bezüglich verlorener Pakete ist zu sagen, dass der Java-Sender höchstwahrscheinlich um einiges langsamer ist als der C-Empfänger. Die meisten Paketverluste entstehen, weil der Empfänger die Pakete nicht schnell genug verarbeiten kann. dass hier kein einziges Paket verloren geht liegt wahrscheinlich daran, dass ein schneller Empfänger mit einem langsameren Sender zusammenarbeitet und der Empfänger damit genug Zeit hat, um die Pakete zu verarbeiten.\\
+	\\\includegraphics[width=\textwidth]{images_ass2/java2c1.png}\\
+	\\\includegraphics[width=\textwidth]{images_ass2/java2c2.png}
+	
+	\subsection{C-Java}
+	Beim Senden von C nach Java lässt sich ein sehr linearer Geschwindigkeitsverlauf beobachten. Da die Übertragungsgeschwindigkeit ja größtenteils vom Empfänger beschränkt wird, ähnelt der Verlauf hier sehr dem beim Senden von Java nach Java. Die Paketverluste sind in diesem Fall sehr groß. Das tritt vermutlich deshalb auf, da hier der genau umgekehrte Effekt auftritt wie beim senden von Java nach C. Wir vermuten, dass der C Sender so schnell ist, dass der Java Empfänger einfach nicht mit kommt, und dadurch viele Pakete verpasst. Außerdem treten auch hier die größten Verluste beim versenden von 1000 Paketen auf.\\
+	\\\includegraphics[width=\textwidth]{images_ass2/c2java1.png}\\
+	\\\includegraphics[width=\textwidth]{images_ass2/c2java2.png}
+	
 	
 	
 	

@@ -1,6 +1,9 @@
 /*
-SENDER 
+SENDER
 Please read "Dokumentation_und_Auswertung.pdf" for more precise information
+uses zlib.h
+compile with:
+gcc -o sender sender.c -lz
 */
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -16,7 +19,7 @@ Please read "Dokumentation_und_Auswertung.pdf" for more precise information
 
 int main(int argc, char *argv[]){
 
-    
+
     //handle wrong number of cmd args
     if(argc != 5){
         handle_error("Usage: ./sender <receiver name> <port> <number of packets to send> <packet payload size>");
@@ -42,7 +45,7 @@ int main(int argc, char *argv[]){
     if(sock < 0){
         handle_error("socket could not be created");
     }
-    
+
     //set sender info: protocol and host and handle host creation error
     receiver.sin_family = AF_INET;
     host = gethostbyname(argv[1]);

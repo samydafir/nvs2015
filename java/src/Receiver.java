@@ -150,10 +150,3 @@ public class Receiver {
 		}
 	}
 }
-
-
-
-
-
-
-

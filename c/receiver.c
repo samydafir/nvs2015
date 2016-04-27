@@ -1,6 +1,9 @@
 /*
-RECEIVER 
+RECEIVER
 Please read "Dokumentation_und_Auswertung.pdf" for more precise information
+uses zlib.h
+compile with:
+gcc -o receiver receiver.c -lz
 */
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -31,15 +34,15 @@ int main(int argc, char *argv[]){
     total_pack_size = payload + 1;
     uint crc;
     crc = 0;
-    int buffer[total_pack_size]; 
+    int buffer[total_pack_size];
     pack_exp = atoi(argv[3]);
-    
+
     //create udp ipv4 socket
     sock = socket(AF_INET,SOCK_DGRAM,0);
     if(sock < 0){
         handle_error("socket could not be created");
     }
-    
+
     //set address options, like protocol, socket,...
     receiver.sin_family = AF_INET;
     receiver.sin_addr.s_addr = htonl(INADDR_ANY);
@@ -69,7 +72,7 @@ int main(int argc, char *argv[]){
     if(setsockopt(sock,SOL_SOCKET,SO_RCVTIMEO,&timeout,sizeof(timeout)) < 0){
         handle_error("could not set socket receive-timeout");
     }
-    
+
     //Set starting time. Does not take the time for receiving the first packet into account.
     gettimeofday(&before, NULL);
     while(rec_cnt < pack_exp && recvfrom(sock,buffer,total_pack_size,0,(struct sockaddr*)&sender,&sockaddr_len) >= 0){
@@ -82,7 +85,7 @@ int main(int argc, char *argv[]){
         gettimeofday(&after, NULL);
     }
     //timestamp is only refreshed if all packets were received
-    if(rec_cnt == pack_exp){    
+    if(rec_cnt == pack_exp){
         gettimeofday(&after, NULL);
     }
     evaluate(before, after, total_pack_size, rec_cnt,crc);
