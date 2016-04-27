@@ -64,7 +64,6 @@ int main(int argc, char *argv[]){
         }else{
             crc = crc32(crc, (const void*)buffer, total_pack_size - 1);
             buffer[total_pack_size - 1] = htonl(crc);
-            printf("%u", buffer[total_pack_size]);
         }
         //send message in buffer as datagram and handle error
         sent = sendto(sock, buffer, sizeof(buffer), 0, (struct sockaddr *)&receiver, sizeof(struct sockaddr_in));

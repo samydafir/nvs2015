@@ -78,7 +78,6 @@ int main(int argc, char *argv[]){
             crc = crc32(crc, (const void*)buffer, total_pack_size);
         }else{
             crc = crc32(crc, (const void*)buffer, total_pack_size - 1);
-            printf("%d\n", buffer[total_pack_size - 1]);
         }
         gettimeofday(&after, NULL);
     }

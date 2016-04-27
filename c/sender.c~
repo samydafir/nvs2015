@@ -64,7 +64,6 @@ int main(int argc, char *argv[]){
         }else{
             crc = crc32(crc, (const void*)buffer, total_pack_size - 1);
             buffer[total_pack_size - 1] = htonl(crc);
-            printf("%u", buffer[total_pack_size]);
         }
         //send message in buffer as datagram and handle error
         sent = sendto(sock, buffer, sizeof(buffer), 0, (struct sockaddr *)&receiver, sizeof(struct sockaddr_in));
@@ -87,7 +86,7 @@ void evaluate(struct timeval before, struct timeval after, int msg_size, int amt
     printf("%d packets sent\n", amt);
     if(duration != 0.0){
         double speed = total_size/duration;
-        printf("%.2f MB/s\n", speed);
+        printf("%.3f MB/s\n", speed);
     }else{
         handle_error("measured time too short. Try sending more packets");
     }
