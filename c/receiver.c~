@@ -78,7 +78,6 @@ int main(int argc, char *argv[]){
             crc = crc32(crc, (const void*)buffer, total_pack_size);
         }else{
             crc = crc32(crc, (const void*)buffer, total_pack_size - 1);
-            printf("%d\n", buffer[total_pack_size - 1]);
         }
         gettimeofday(&after, NULL);
     }
@@ -100,7 +99,7 @@ void evaluate(struct timeval before, struct timeval after, int msg_size, int amt
     printf("%d packets received\n", amt);
     if(duration != 0.0){
         double speed = total_size/duration;
-        printf("%.2f MB/s\n", speed);
+        printf("%.3f MB/s\n", speed);
     }else{
         handle_error("measured time too short. Try sending more packets");
     }
