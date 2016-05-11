@@ -53,7 +53,21 @@ des Anfordernden Gerätes (ARP-Antwort). Nach Empfangen der Antwort, werden die 
  Adressen außerhalb des lokalen Subnets antworten würden.
 \\
 \\
-
+Außerhalb von Netzwerken zu senden wird auch Unicast genannt.\\
+Außerhalb des Lokalen Netzwerkes muss immer eine genaue adresse Vorhanden sein.\\
+\\
+Vorteile:\\
+Mehr Sicherheit, weil im Gegenteil zu Subnetzgesteuerten Broadcasts wird Paket nur an einen
+PC gesendet und nicht an alle im Netzwerk\\
+Keine Neukonfiguration des Routers\\
+Belegt weniger Netzwerkbandbreite als Subnet gesteuert\\
+\\
+Unterstützt IPv4 und IPv6\\
+Nachteile:\\
+Reaktivierungspakete finden ZielPc nicht, wenn Subnetzadressen geändert wurden\\
+Switches müssen möglicherweise konfiguriert werden zum weiterleiten von UDP Paketen zu unterstützen
+\\
+\\
 \textbf{Aufgabe 20:}
 \\
 \\
@@ -73,7 +87,7 @@ Subnetzmaske: 11111111.11111111.11111111.1111\textbf{0000} $\Rightarrow$ mit die
 \\
 \\
 \includegraphics[width = 17cm, height = 4cm]{bsp-cidr.jpg}
-\ \\
+\newpage
 Klasse A:\\
 Die Submaske ist in der Klasse A immer 255.0.0.0, über die Subnetzmaske wird definiert welcher Teil der IP-Adresse die NetzwerkID und was die \\HostID ist.\\
 Bsp: zu Klasse A:\\
@@ -86,7 +100,7 @@ Rechners und wird auch Loopback-Adresse genannt. Daher können die Netzwerke 0 u
 nicht zu den verwendbaren Klasse A Netzwerken gezählt werden.\\
 Klasse B:\\
 \includegraphics[width = 7cm, height = 6cm]{classb.jpg}
-\\
+\newpage
 Klasse C:\\
 \includegraphics[width = 7cm, height = 6cm]{classc.jpg}
 \\

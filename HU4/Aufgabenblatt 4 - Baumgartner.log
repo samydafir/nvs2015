@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9) (preloaded format=pdflatex 2016.3.6)  11 MAY 2016 19:34
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9) (preloaded format=pdflatex 2016.3.6)  11 MAY 2016 19:53
 entering extended mode
 **"./Aufgabenblatt 4 - Baumgartner.tex"
 ("Aufgabenblatt 4 - Baumgartner.tex"
@@ -625,222 +625,241 @@ Package babel Info: Redefining german shorthand "~
  [1
 
 {C:/Users/Ikuja/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}]
-Underfull \hbox (badness 10000) in paragraph at lines 38--56
+LaTeX Font Info:    Try loading font information for U+msa on input line 79.
 
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 38--56
-
- []
-
-
-Overfull \hbox (44.54265pt too wide) in paragraph at lines 38--56
-\OT1/cmr/m/n/12 ein Com-pu-ter nun solch ein Pa-ket, sieht er nach ob sei-ne Ad
-res-se die Empf[]angeradresse
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 38--56
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 38--56
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 38--56
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 38--56
-
- []
-
-LaTeX Font Info:    Try loading font information for U+msa on input line 65.
 ("C:\Users\Ikuja\AppData\Local\Programs\MiKTeX 2.9\tex\latex\amsfonts\umsa.fd"
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 65.
+LaTeX Font Info:    Try loading font information for U+msb on input line 79.
 ("C:\Users\Ikuja\AppData\Local\Programs\MiKTeX 2.9\tex\latex\amsfonts\umsb.fd"
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Try loading font information for U+lasy on input line 65.
+LaTeX Font Info:    Try loading font information for U+lasy on input line 79.
 ("C:\Users\Ikuja\AppData\Local\Programs\MiKTeX 2.9\tex\latex\base\ulasy.fd"
 File: ulasy.fd 1998/08/17 v2.2e LaTeX symbol font definitions
 )
 <bsp-cidr.jpg, id=10, 884.55469pt x 204.01219pt>
 File: bsp-cidr.jpg Graphic file (type jpg)
  <use bsp-cidr.jpg>
-Package pdftex.def Info: bsp-cidr.jpg used on input line 75.
+Package pdftex.def Info: bsp-cidr.jpg used on input line 89.
 (pdftex.def)             Requested size: 483.69917pt x 113.81023pt.
 
-<classa.jpg, id=11, 237.88875pt x 200.24812pt>
-File: classa.jpg Graphic file (type jpg)
- <use classa.jpg>
-Package pdftex.def Info: classa.jpg used on input line 80.
-(pdftex.def)             Requested size: 199.17905pt x 170.72504pt.
-
-<classb.jpg, id=12, 261.97874pt x 213.79875pt>
-File: classb.jpg Graphic file (type jpg)
- <use classb.jpg>
-Package pdftex.def Info: classb.jpg used on input line 88.
-(pdftex.def)             Requested size: 199.17387pt x 170.71625pt.
-
-<classc.jpg, id=13, 268.00125pt x 191.9672pt>
-File: classc.jpg Graphic file (type jpg)
- <use classc.jpg>
-Package pdftex.def Info: classc.jpg used on input line 91.
-(pdftex.def)             Requested size: 199.1684pt x 170.72723pt.
-
-<classde.jpg, id=14, 466.74374pt x 192.72pt>
-File: classde.jpg Graphic file (type jpg)
- <use classde.jpg>
-Package pdftex.def Info: classde.jpg used on input line 97.
-(pdftex.def)             Requested size: 369.89864pt x 142.26355pt.
-
-Underfull \hbox (badness 10000) in paragraph at lines 57--98
+Underfull \hbox (badness 10000) in paragraph at lines 38--90
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 57--98
+Underfull \hbox (badness 10000) in paragraph at lines 38--90
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 57--98
+Overfull \hbox (44.54265pt too wide) in paragraph at lines 38--90
+\OT1/cmr/m/n/12 ein Com-pu-ter nun solch ein Pa-ket, sieht er nach ob sei-ne Ad
+res-se die Empf[]angeradresse
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 38--90
 
  []
 
 
-Overfull \hbox (3.50764pt too wide) in paragraph at lines 57--98
+Underfull \hbox (badness 10000) in paragraph at lines 38--90
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 38--90
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 38--90
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 38--90
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 38--90
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 38--90
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 38--90
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 38--90
+
+ []
+
+
+Overfull \hbox (3.50764pt too wide) in paragraph at lines 38--90
 \OT1/cmr/m/n/12 (Bsp. von Wi-ki-pe-dia): Sub-netz-mas-ke: 11111111.11111111.111
 11111.1111\OT1/cmr/bx/n/12 0000
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 57--98
+Underfull \hbox (badness 10000) in paragraph at lines 38--90
 
  []
 
 
-Overfull \hbox (93.69917pt too wide) in paragraph at lines 57--98
-[]
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 57--98
-
+Overfull \hbox (93.69917pt too wide) in paragraph at lines 38--90
+[] 
  []
 
 Package babel Info: Redefining german shorthand "f
-(babel)             in language  on input line 98.
+(babel)             in language  on input line 90.
 Package babel Info: Redefining german shorthand "|
-(babel)             in language  on input line 98.
+(babel)             in language  on input line 90.
 Package babel Info: Redefining german shorthand "~
-(babel)             in language  on input line 98.
+(babel)             in language  on input line 90.
 Package babel Info: Redefining german shorthand "f
-(babel)             in language  on input line 98.
+(babel)             in language  on input line 90.
 Package babel Info: Redefining german shorthand "|
-(babel)             in language  on input line 98.
+(babel)             in language  on input line 90.
 Package babel Info: Redefining german shorthand "~
-(babel)             in language  on input line 98.
+(babel)             in language  on input line 90.
 pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has 
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.98 \newpage
+l.90 \newpage
               [1]
 Package babel Info: Redefining german shorthand "f
-(babel)             in language  on input line 98.
+(babel)             in language  on input line 90.
 Package babel Info: Redefining german shorthand "|
-(babel)             in language  on input line 98.
+(babel)             in language  on input line 90.
 Package babel Info: Redefining german shorthand "~
-(babel)             in language  on input line 98.
+(babel)             in language  on input line 90.
 Package babel Info: Redefining german shorthand "f
-(babel)             in language  on input line 98.
+(babel)             in language  on input line 90.
 Package babel Info: Redefining german shorthand "|
-(babel)             in language  on input line 98.
+(babel)             in language  on input line 90.
 Package babel Info: Redefining german shorthand "~
-(babel)             in language  on input line 98.
- [2 <./bsp-cidr.jpg> <./classa.jpg>]
+(babel)             in language  on input line 90.
+ [2 <./bsp-cidr.jpg>]
+<classa.jpg, id=21, 237.88875pt x 200.24812pt>
+File: classa.jpg Graphic file (type jpg)
+ <use classa.jpg>
+Package pdftex.def Info: classa.jpg used on input line 94.
+(pdftex.def)             Requested size: 199.17905pt x 170.72504pt.
+
+<classb.jpg, id=22, 261.97874pt x 213.79875pt>
+File: classb.jpg Graphic file (type jpg)
+ <use classb.jpg>
+Package pdftex.def Info: classb.jpg used on input line 102.
+(pdftex.def)             Requested size: 199.17387pt x 170.71625pt.
 Package babel Info: Redefining german shorthand "f
-(babel)             in language  on input line 98.
+(babel)             in language  on input line 103.
 Package babel Info: Redefining german shorthand "|
-(babel)             in language  on input line 98.
+(babel)             in language  on input line 103.
 Package babel Info: Redefining german shorthand "~
-(babel)             in language  on input line 98.
+(babel)             in language  on input line 103.
 Package babel Info: Redefining german shorthand "f
-(babel)             in language  on input line 98.
+(babel)             in language  on input line 103.
 Package babel Info: Redefining german shorthand "|
-(babel)             in language  on input line 98.
+(babel)             in language  on input line 103.
 Package babel Info: Redefining german shorthand "~
-(babel)             in language  on input line 98.
- [3 <./classb.jpg> <./classc.jpg> <./classde.jpg>]
-Underfull \hbox (badness 10000) in paragraph at lines 99--116
+(babel)             in language  on input line 103.
+ [3 <./classa.jpg> <./classb.jpg>] <classc.jpg, id=27, 268.00125pt x 191.9672pt
+>
+File: classc.jpg Graphic file (type jpg)
+
+<use classc.jpg>
+Package pdftex.def Info: classc.jpg used on input line 105.
+(pdftex.def)             Requested size: 199.1684pt x 170.72723pt.
+ <classde.jpg, id=28, 466.74374pt x 192.72pt>
+File: classde.jpg Graphic file (type jpg)
+
+<use classde.jpg>
+Package pdftex.def Info: classde.jpg used on input line 111.
+(pdftex.def)             Requested size: 369.89864pt x 142.26355pt.
+Package babel Info: Redefining german shorthand "f
+(babel)             in language  on input line 112.
+Package babel Info: Redefining german shorthand "|
+(babel)             in language  on input line 112.
+Package babel Info: Redefining german shorthand "~
+(babel)             in language  on input line 112.
+Package babel Info: Redefining german shorthand "f
+(babel)             in language  on input line 112.
+Package babel Info: Redefining german shorthand "|
+(babel)             in language  on input line 112.
+Package babel Info: Redefining german shorthand "~
+(babel)             in language  on input line 112.
+ [4 <./classc.jpg> <./classde.jpg>]
+Underfull \hbox (badness 10000) in paragraph at lines 113--130
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 99--116
+Underfull \hbox (badness 10000) in paragraph at lines 113--130
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 99--116
+Underfull \hbox (badness 10000) in paragraph at lines 113--130
 
  []
 
 
-Overfull \hbox (1.73764pt too wide) in paragraph at lines 99--116
+Overfull \hbox (1.73764pt too wide) in paragraph at lines 113--130
 \OT1/cmr/m/n/12 Der DHCP-Server wird als Hin-ter-grund-pro-zess ge-st-ar-tet un
 d war-tet auf UDP-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 99--116
+Underfull \hbox (badness 10000) in paragraph at lines 113--130
 
  []
 
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 117.
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 131.
 
 ("C:\Users\Ikuja\AppData\Local\Programs\MiKTeX 2.9\tex\latex\base\omscmr.fd"
 File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <12> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 117.
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 129.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 131.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 143.
 Package babel Info: Redefining german shorthand "f
-(babel)             in language  on input line 129.
+(babel)             in language  on input line 143.
 Package babel Info: Redefining german shorthand "|
-(babel)             in language  on input line 129.
+(babel)             in language  on input line 143.
 Package babel Info: Redefining german shorthand "~
-(babel)             in language  on input line 129.
+(babel)             in language  on input line 143.
 Package babel Info: Redefining german shorthand "f
-(babel)             in language  on input line 129.
+(babel)             in language  on input line 143.
 Package babel Info: Redefining german shorthand "|
-(babel)             in language  on input line 129.
+(babel)             in language  on input line 143.
 Package babel Info: Redefining german shorthand "~
-(babel)             in language  on input line 129.
+(babel)             in language  on input line 143.
 
-[4]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 129.
+[5]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 143.
  ("Aufgabenblatt 4 - Baumgartner.aux")
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 129.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 129.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 143.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 143.
 Package rerunfilecheck Info: File `"Aufgabenblatt 4 - Baumgartner".out' has not
  changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 129.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 143.
  ) 
 Here is how much of TeX's memory you used:
- 6708 strings out of 493634
- 96217 string characters out of 3135240
- 186824 words of memory out of 3000000
+ 6709 strings out of 493634
+ 96223 string characters out of 3135240
+ 185824 words of memory out of 3000000
  9993 multiletter control sequences out of 15000+200000
  10419 words of font info for 41 fonts, out of 3000000 for 9000
  1025 hyphenation exceptions out of 8191
@@ -851,9 +870,9 @@ blic/amsfonts/cm/cmcsc10.pfb><C:/Users/Ikuja/AppData/Local/Programs/MiKTeX 2.9/
 fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Users/Ikuja/AppData/Local/Programs
 /MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Users/Ikuja/AppData/Loc
 al/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
-Output written on "Aufgabenblatt 4 - Baumgartner.pdf" (5 pages, 361163 bytes).
+Output written on "Aufgabenblatt 4 - Baumgartner.pdf" (6 pages, 362300 bytes).
 PDF statistics:
- 51 PDF objects out of 1000 (max. 8388607)
- 5 named destinations out of 1000 (max. 500000)
+ 55 PDF objects out of 1000 (max. 8388607)
+ 6 named destinations out of 1000 (max. 500000)
  26 words of extra memory for PDF output out of 10000 (max. 10000000)
 
