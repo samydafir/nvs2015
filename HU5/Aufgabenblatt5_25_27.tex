@@ -86,8 +86,7 @@ Im Destination Cache werden Adressen verwaltet, an die etwas gesendet wurde. Fü
 In der Prefix List werden die Präfixe verwaltet, die auf demselben Netz gültig sind. Jeder Eintrag, außer der zur link-lokalen Adresse, hat ein Ablaufdatum. Somit bleiben nur Netze in der Liste, die von einem Router verkündet werden.\\
 In der Default Router List werden alle Router verwaltet, die für das Interface bekannt sind. Die Einträge verweisen auf Einträge im Neighbor Cache. Zusätzlich haben sie ein Ablaufdatum, sodass alte Router verschwinden und nur die erhalten bleiben, die ihre Anwesenheit verkünden.\\
 Die Informationen zum Erstellen dieser Listen werden per ICMPv6 ausgetauscht. NDP definiert zu diesem Zweck fünf ICMPv6-Typen.
-\\
-\\
+\newpage
 \textbf{Aufgabe 27:}
 \\
 \\
@@ -95,6 +94,15 @@ Um Applikationen die Nutzung der Netzwerk-Funktionalität eines Betriebssystems 
 ermöglichen, muss eine Schnittstelle definiert werden. Skizzieren Sie das Berkeley-Sockets
 Interface und seine wesentlichen Operationen.
 \\
-
+\includegraphics[width=10cm]{27.png}
+\newpage
+API Funktionen:
+\begin{itemize}
+	\item socket() erzeugt einen neuen Socket des entsprechenden Typs.
+	\item bind() auf Empfängerseite benutzt um den Socket mit der Adresstruktur zu verbinden.
+	\item listen() auf Empfängerseite benutzt um den gebundenen Socket in den listening Modus zu versetzen. Dieser Modus bereitet ihn auf eingehende Verbindungen vor (nur notwendig bei stream orientierten dada-modes).
+	\item accept() wenn die Applikation im listening Modus ist, muss bei eingehenden Verbindungen akzeptiert werden, worauf ein neuer Socket erstellt wird und die Verbindung aus der listening queue entfernt wird (nicht bei datagram sockets, da der Empfänger möglicherweise sofort antwortet).
+	\item connect() ermöglicht eine direkte Verbindung zum remote Host durch die angegebene Adresse im Socket.
+\end{itemize}
 % -------------
 \end{document}
