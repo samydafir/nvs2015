@@ -2,6 +2,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.zip.CRC32;
@@ -15,6 +16,9 @@ import java.util.zip.CRC32;
  */
 public class Sender {
 	
+	private static int LAR;
+	private static int windowSize;
+	
 	/**
 	 * main handles wrong numbers of cmd-arguments.
 	 * Receiver-name, receiver-port, sending-steps and the amount of packets to send in each step have to be 
@@ -27,8 +31,9 @@ public class Sender {
  	 *  args[3] size of each packet's User-Message 	
 	 */
 	public static void main(String[] args){
-		if(args.length != 4){
-			System.out.println("Usage: java Sender <receiver name> <port> <number of packets to send> <payload size>");
+		LAR = -1;
+		if(args.length != 5){
+			System.out.println("Usage: java Sender <receiver name> <port> <number of packets to send> <payload size> <window-size>");
 		}else{
 			try{
 				startSending(args);
@@ -49,22 +54,30 @@ public class Sender {
 	private static void startSending(String[] args) throws IOException{
         long beforeTime = 0;
         long afterTime = 0;
-        
+        windowSize = Integer.parseInt(args[4]);
 		//create socket with standard constructor. Sender-port does not have to be known.
 		DatagramSocket socket = new DatagramSocket();
+		//set timeout for ACK-reception
+		socket.setSoTimeout(1000);
+
 		//transform the cmd-argument receiver-name into an InetAddress object.
 		CRC32 checksum = new CRC32();
 		InetAddress address = InetAddress.getByName(args[0]);
 		int receiverSocket = Integer.parseInt(args[1]);
 		int size = Integer.parseInt(args[3]) * 4;
 		ByteBuffer buffer = ByteBuffer.allocate(size + 4);
+		ByteBuffer ackBuffer = ByteBuffer.allocate(4);
 		byte[] message = getPayload(size);
 		//DatagramPacket checkPacket = new DatagramPacket(buffer, buffer.length);
 		int sendAmt = Integer.parseInt(args[2]);
+		DatagramPacket sendPacket;
+		DatagramPacket ackPacket = new DatagramPacket(ackBuffer.array(), ackBuffer.array().length);
+		
 		//the for-loop handles sending of packets. creates a string-message including the packet-number.
 		//Create byte-array from string, receiver-info to generate packet and
 		//send the packet using the datagram socket.
 		beforeTime = System.currentTimeMillis();
+		int acknumber;
 		for(int i = 0; i < sendAmt; i++){
 			buffer.putInt(i);
 			/*If current packet is not the last packet: put the whole message into the bytebuffer and use it
@@ -78,8 +91,23 @@ public class Sender {
 				checksum.update(Arrays.copyOfRange(buffer.array(), 0, buffer.array().length-4));
 				buffer.putInt((int) checksum.getValue());
 			}
-			DatagramPacket packet = new DatagramPacket(buffer.array(), buffer.array().length, address, receiverSocket);
-			socket.send(packet);
+			sendPacket = new DatagramPacket(buffer.array(), buffer.array().length, address, receiverSocket);
+			socket.send(sendPacket);
+			if(i == LAR + windowSize){
+				try{
+					socket.receive(ackPacket);
+					ackBuffer = ByteBuffer.wrap(ackPacket.getData());
+					acknumber = ackBuffer.getInt();
+					if(acknumber != LAR + 1){
+						i = LAR + 1;
+					}else{
+						LAR++;
+					}
+				}catch(SocketTimeoutException e){
+					i = LAR + 1;
+				}
+				
+			}
 			buffer.clear();
 		}
 		afterTime = System.currentTimeMillis();

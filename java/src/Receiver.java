@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
@@ -15,6 +16,10 @@ import java.util.zip.CRC32;
  */
 public class Receiver {
     
+	private static int LAS;
+    private static InetAddress ackAddress;
+    private static int ackPort;
+	
     /**
      * main handles wrong numbers of cmd-arguments. Wrong numbers lead to a message describing usage being
      * issued, otherwise receive() is called. IOExceptions thrown in the receive-method are handled here.
@@ -23,6 +28,7 @@ public class Receiver {
      * 	args[1] timeout for the receiving socket
      */
 	public static void main(String[] args){
+		LAS = -1;
 		if(args.length != 5 && args.length != 4){
 			System.out.println("Usage: java Receiver <port number> <receiving timeout in ms> <expected packets> <payload size> <-v for verbose>");
 		}else{
@@ -49,12 +55,14 @@ public class Receiver {
 		byte[] buffer = new byte[size + 4];
 		//create socket with port-number specified in args[0].
 		DatagramSocket socket = new DatagramSocket(Integer.parseInt(args[0]));
-		//set socket-timeout to terminate following loop, if no more packets received
-		socket.setSoTimeout(Integer.parseInt(args[1]));
+		
 		//create datagram-packet with previously defined buffer. Received packets will be saved in this variable
 		DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
 		//get expected amount  of packets
         int expec = Integer.parseInt(args[2]);
+        
+        //Variables used for ACK
+        ByteBuffer ackBuffer = ByteBuffer.allocate(4);
 
         CRC32 checksum = new CRC32();
 		int packetCount = 0;
@@ -62,11 +70,19 @@ public class Receiver {
 			//infinite loop to receive packets. Only terminated if no packets arrive for a certain specified time
 			//e.g. if a connection problem occurs or no more packets are sent by the Sender.
 			socket.receive(packet);
+			//set socket-timeout to terminate following loop, if no more packets received
+			socket.setSoTimeout(Integer.parseInt(args[1]));
+			
+			//get Sender-sddress and port
+			ackAddress = packet.getAddress();
+			ackPort = packet.getPort();
+			sendAck(packet, socket);
 			checksum.update(packet.getData());
 			beforeTime = System.currentTimeMillis();
 			packetCount++;
 			while(true){
 				socket.receive(packet);
+				sendAck(packet, socket);
 				afterTime = System.currentTimeMillis();
 				packetCount++;
 				byte[] message = packet.getData();
@@ -88,6 +104,18 @@ public class Receiver {
 		socket.close();
 		System.out.println("checksum: " + checksum.getValue());
 		evaluate(afterTime, beforeTime, packet.getLength(), packetCount);
+	}
+	
+	
+	private static void sendAck(DatagramPacket packet, DatagramSocket socket) throws IOException{
+        byte[] packetData = packet.getData();
+        ByteBuffer buffer = ByteBuffer.wrap(packetData);
+        int seqNum = buffer.getInt();
+        buffer = ByteBuffer.allocate(4);
+        buffer.putInt(seqNum);
+        DatagramPacket ack = new DatagramPacket(buffer.array(), 4, ackAddress, ackPort);
+        socket.send(ack);
+        LAS++;
 	}
 	
 	
