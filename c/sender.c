@@ -21,30 +21,45 @@ int main(int argc, char *argv[]){
 
 
     //handle wrong number of cmd args
-    if(argc != 5){
-        handle_error("Usage: ./sender <receiver name> <port> <number of packets to send> <packet payload size>");
+    if(argc != 7){
+        handle_error("Usage: ./sender <receiver name> <port> <number of packets to send> <packet payload size> <ack-timeout> <window-size>");
     }
 
     //declare and define required local vars
+    int LAR;
     int sock, amt_send, amt_sent, sent, total_pack_size, payload, sockaddr_len, i;
-    struct sockaddr_in receiver;
+    struct sockaddr_in receiver, sender;
     struct hostent *host;
     struct timeval before, after;
+    struct timeval ack_timeout;
     uint crc;
     crc = 0;
     payload = atoi(argv[4]);
     total_pack_size = payload + 1;
+    int ack_buffer[1];
     int buffer[total_pack_size];
     for(i = 0; i < total_pack_size; i++){
         buffer[i] = htonl(9);
     }
+    LAR = -1;
     amt_send = atoi(argv[3]);
+    int window_size;
+    window_size = atoi(argv[6]);
 
     //create udp ipv4 socket and handle creation error
     sock = socket(AF_INET, SOCK_DGRAM, 0);
     if(sock < 0){
         handle_error("socket could not be created");
     }
+
+    /*set after first receive such that the receiver waits for the first packet
+    indefinitely*/
+    ack_timeout.tv_sec = 0;
+    ack_timeout.tv_usec = atoi(argv[5]) * 1000;
+    if(setsockopt(sock,SOL_SOCKET,SO_RCVTIMEO,&ack_timeout,sizeof(ack_timeout)) < 0){
+        handle_error("could not set socket receive-timeout");
+    }
+
 
     //set sender info: protocol and host and handle host creation error
     receiver.sin_family = AF_INET;
@@ -73,6 +88,18 @@ int main(int argc, char *argv[]){
         if(sent == 0){
             handle_error("package not sent successfully");
         }
+      /*handle acks, go-back-n if either ack not expected ack or no ack received for
+      first packet in sliding window */
+      if(amt_sent == LAR + window_size && recvfrom(sock,ack_buffer,sizeof(ack_buffer),0,(struct sockaddr*)&sender,&sockaddr_len) >= 0){
+        printf("%d\n", ntohl(ack_buffer[0]));
+          if(ntohl(ack_buffer[0]) == LAR + 1){
+            LAR++;
+          }else{
+            amt_sent = LAR + 1;
+          }
+      }else{
+        amt_sent = LAR + 1;
+      }
     }
     gettimeofday(&after, NULL);
     evaluate(before,after,total_pack_size,amt_send,crc);
@@ -88,8 +115,8 @@ void evaluate(struct timeval before, struct timeval after, int msg_size, int amt
     printf("crc32-checksum: %u\n", crc);
     printf("%d packets sent\n", amt);
     if(duration != 0.0){
-        double speed = total_size/duration;
-        printf("%.3f MB/s\n", speed);
+        double speed = 8 * total_size/duration;
+        printf("%.3f mbit/s\n", speed);
     }else{
         handle_error("measured time too short. Try sending more packets");
     }

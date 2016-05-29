@@ -26,6 +26,7 @@ int main(int argc, char *argv[]){
         handle_error("Usage: ./receiver <port> <timeout in s> <number of ecpected packets> <packet payload size>");
     }
     //required local var declaration
+    int LAS;
     int sock, sockaddr_len, one, t_out, rec_cnt, payload, total_pack_size, pack_exp, i;
     struct sockaddr_in receiver, sender;
     struct timeval timeout, before, after;
@@ -35,7 +36,9 @@ int main(int argc, char *argv[]){
     uint crc;
     crc = 0;
     int buffer[total_pack_size];
+    int ack_buffer[1];
     pack_exp = atoi(argv[3]);
+    LAS = -1;
 
     //create udp ipv4 socket
     sock = socket(AF_INET,SOCK_DGRAM,0);
@@ -48,8 +51,8 @@ int main(int argc, char *argv[]){
     receiver.sin_addr.s_addr = htonl(INADDR_ANY);
     receiver.sin_port = htons(atoi(argv[1]));
 
-    /*configure timeout for socket. Only needed to terminate if at least
-    one packet was not received */
+    /*configure timeout for socket. Only needed to terminate if no packet
+    was received */
     timeout.tv_sec = atoi(argv[2]);
     timeout.tv_usec = 0;
 
@@ -65,6 +68,10 @@ int main(int argc, char *argv[]){
     if((recvfrom(sock,buffer,sizeof(buffer),0,(struct sockaddr*)&sender,&sockaddr_len)) >= 0){
         crc = crc32(crc, (const void*)buffer, total_pack_size);
         rec_cnt++;
+        ack_buffer[0] = buffer[0];
+        printf("%d\n", ntohl(ack_buffer[0]));
+        sendto(sock, ack_buffer, sizeof(ack_buffer), 0, (struct sockaddr *)&sender, sizeof(struct sockaddr_in));
+        LAS++;
     }
 
     /*set after first receive such that the receiver waits for the first packet
@@ -75,7 +82,7 @@ int main(int argc, char *argv[]){
 
     //Set starting time. Does not take the time for receiving the first packet into account.
     gettimeofday(&before, NULL);
-    while(rec_cnt < pack_exp && recvfrom(sock,buffer,total_pack_size,0,(struct sockaddr*)&sender,&sockaddr_len) >= 0){
+    while(recvfrom(sock,buffer,total_pack_size,0,(struct sockaddr*)&sender,&sockaddr_len) >= 0){
         rec_cnt++;
         if(rec_cnt < pack_exp){
             crc = crc32(crc, (const void*)buffer, total_pack_size);
@@ -83,6 +90,10 @@ int main(int argc, char *argv[]){
             crc = crc32(crc, (const void*)buffer, total_pack_size - 1);
         }
         gettimeofday(&after, NULL);
+        ack_buffer[0] = buffer[0];
+        printf("%d\n", ntohl(ack_buffer[0]));
+        sendto(sock, ack_buffer, sizeof(ack_buffer), 0, (struct sockaddr *)&sender, sizeof(struct sockaddr_in));
+        LAS++;
     }
     //timestamp is only refreshed if all packets were received
     if(rec_cnt == pack_exp){
@@ -101,8 +112,8 @@ void evaluate(struct timeval before, struct timeval after, int msg_size, int amt
     printf("crc32-checksum: %u\n", crc);
     printf("%d packets received\n", amt);
     if(duration != 0.0){
-        double speed = total_size/duration;
-        printf("%.3f MB/s\n", speed);
+        double speed = 8 * total_size/duration;
+        printf("%.3f mbit/s\n", speed);
     }else{
         handle_error("measured time too short. Try sending more packets");
     }
