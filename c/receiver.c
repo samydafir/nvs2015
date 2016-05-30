@@ -93,7 +93,7 @@ int main(int argc, char *argv[]){
         ack_buffer[0] = buffer[0];
         printf("%d\n", ntohl(ack_buffer[0]));
         sendto(sock, ack_buffer, sizeof(ack_buffer), 0, (struct sockaddr *)&sender, sizeof(struct sockaddr_in));
-        LAS++;
+        LAS = ntohl(ack_buffer[0]);
     }
     //timestamp is only refreshed if all packets were received
     if(rec_cnt == pack_exp){

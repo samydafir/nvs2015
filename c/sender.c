@@ -15,6 +15,7 @@ gcc -o sender sender.c -lz
 #include <strings.h>
 #include <string.h>
 #include <zlib.h>
+#include <unistd.h>
 #include "sender.h"
 
 int main(int argc, char *argv[]){
@@ -31,7 +32,7 @@ int main(int argc, char *argv[]){
     struct sockaddr_in receiver, sender;
     struct hostent *host;
     struct timeval before, after;
-    struct timeval ack_timeout;
+    struct timeval ack_timeout, sleep;
     uint crc;
     crc = 0;
     payload = atoi(argv[4]);
@@ -93,12 +94,14 @@ int main(int argc, char *argv[]){
       if(amt_sent == LAR + window_size && recvfrom(sock,ack_buffer,sizeof(ack_buffer),0,(struct sockaddr*)&sender,&sockaddr_len) >= 0){
         printf("%d\n", ntohl(ack_buffer[0]));
           if(ntohl(ack_buffer[0]) == LAR + 1){
-            LAR++;
+            LAR = ntohl(ack_buffer[0]);
           }else{
             amt_sent = LAR + 1;
+            usleep(1000);
           }
       }else{
         amt_sent = LAR + 1;
+        usleep(1000);
       }
     }
     gettimeofday(&after, NULL);

@@ -9,7 +9,9 @@ import java.util.zip.CRC32;
 
 /**
  * Sender represents a UDP packet sender. Parameters can be specified via cmd.
- * Packets can be sent to a single recipient.
+ * Packets can be sent to a single recipient. A checksum over all Packets is and
+ * sent as part of the last packet.
+ * Uses a sliding-window to ensure no packets are lost.
  * @author Thomas Samy Dafir, 1331483
  * @author Dominik Baumgartner, 0920177
  * @author Vivien Wallner, 1320293
@@ -39,7 +41,7 @@ public class Sender {
 				startSending(args);
 			}catch(IOException e){
 				System.err.println("issue creating socket");
-			}
+			}catch(InterruptedException e){}
 		}
 	}
 	/**
@@ -50,15 +52,16 @@ public class Sender {
 	 * in each step the number of packets specified in args[3,4,...] is sent.
 	 * @param args cmd-arguments passed from main
 	 * @throws IOException exception is forwarded to be handled by calling method
+	 * @throws InterruptedException 
 	 */
-	private static void startSending(String[] args) throws IOException{
+	private static void startSending(String[] args) throws IOException, InterruptedException{
         long beforeTime = 0;
         long afterTime = 0;
         windowSize = Integer.parseInt(args[4]);
 		//create socket with standard constructor. Sender-port does not have to be known.
 		DatagramSocket socket = new DatagramSocket();
 		//set timeout for ACK-reception
-		socket.setSoTimeout(1000);
+		socket.setSoTimeout(10);
 
 		//transform the cmd-argument receiver-name into an InetAddress object.
 		CRC32 checksum = new CRC32();
@@ -77,7 +80,7 @@ public class Sender {
 		//Create byte-array from string, receiver-info to generate packet and
 		//send the packet using the datagram socket.
 		beforeTime = System.currentTimeMillis();
-		int acknumber;
+		int ackNumber;
 		for(int i = 0; i < sendAmt; i++){
 			buffer.putInt(i);
 			/*If current packet is not the last packet: put the whole message into the bytebuffer and use it
@@ -97,14 +100,16 @@ public class Sender {
 				try{
 					socket.receive(ackPacket);
 					ackBuffer = ByteBuffer.wrap(ackPacket.getData());
-					acknumber = ackBuffer.getInt();
-					if(acknumber != LAR + 1){
+					ackNumber = ackBuffer.getInt();
+					if(ackNumber != LAR + 1){
 						i = LAR + 1;
+						Thread.sleep(1);
 					}else{
-						LAR++;
+						LAR = ackNumber;
 					}
 				}catch(SocketTimeoutException e){
 					i = LAR + 1;
+					Thread.sleep(1);
 				}
 				
 			}
@@ -118,7 +123,7 @@ public class Sender {
 	}
 	
 	/**
-	 * constucts the User-Data for to be sent
+	 * constructs the User-Data for to be sent
 	 * @param length length of result string
 	 * @return string of given length
 	 */
@@ -141,7 +146,7 @@ public class Sender {
 	private static void evaluate(long after, long before, int size, int amnt){
 		long duration = after - before;
 		int totalSize = size * amnt;
-		double speed = (double)(totalSize)/(double)(duration);
-		System.out.println(String.format("%.2f KB/s", speed));		
+		double speed = (8 * (double)(totalSize)/(double)(duration)) / 1000;
+		System.out.println(String.format("%.3f mbit/s", speed));		
 	}
 }

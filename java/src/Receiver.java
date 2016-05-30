@@ -8,8 +8,8 @@ import java.util.Arrays;
 import java.util.zip.CRC32;
 
 /**
- * Receiver represents a UDP packet receiver. Saves content of received packets to
- * receive.txt in the directory the class file is in.
+ * Receiver represents a UDP packet receiver. Calculates CRC32 checksum over all received packets.
+ * For each received packet an ACK is sent to the Sender.
  * @author Thomas Samy Dafir, 1331483
  * @author Dominik Baumgartner, 0920177
  * @author Vivien Wallner, 1320293
@@ -103,7 +103,7 @@ public class Receiver {
 		}catch(SocketTimeoutException e){}
 		socket.close();
 		System.out.println("checksum: " + checksum.getValue());
-		evaluate(afterTime, beforeTime, packet.getLength(), packetCount);
+		evaluate(afterTime, beforeTime, packet.getLength(), packetCount, expec);
 	}
 	
 	
@@ -115,7 +115,7 @@ public class Receiver {
         buffer.putInt(seqNum);
         DatagramPacket ack = new DatagramPacket(buffer.array(), 4, ackAddress, ackPort);
         socket.send(ack);
-        LAS++;
+        LAS = seqNum;
 	}
 	
 	
@@ -126,13 +126,14 @@ public class Receiver {
 	 * @param size size of a package's Message
 	 * @param amnt Amount of packets sent
 	 */
-	private static void evaluate(long after, long before, int size, int amnt){
+	private static void evaluate(long after, long before, int size, int amnt, int expec){
+		System.out.println(expec + " packets expected");
 		System.out.println(amnt + " packets received");
 		long duration = after - before;
-		int totalSize = size * amnt;
-		double speed = (double)(totalSize)/(double)(duration);
+		int totalSize = size * expec;
+		double speed = (8 * (double)(totalSize)/(double)(duration)) / 1000;
 		if(speed != Double.NaN && speed != Double.POSITIVE_INFINITY){
-			System.out.println(String.format("%.2f KB/s", speed));
+			System.out.println(String.format("%.3f mbit/s", speed));
 		}else{
 			System.out.println("speed not calculatable");
 		}
