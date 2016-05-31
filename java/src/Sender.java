@@ -82,6 +82,7 @@ public class Sender {
 		beforeTime = System.currentTimeMillis();
 		int ackNumber;
 		for(int i = 0; i < sendAmt; i++){
+			System.out.println("##########" + i);
 			buffer.putInt(i);
 			/*If current packet is not the last packet: put the whole message into the bytebuffer and use it
 			 * to update the checksum. Otherwise: put message up to length - 4 into the buffer, to leave space
@@ -102,14 +103,14 @@ public class Sender {
 					ackBuffer = ByteBuffer.wrap(ackPacket.getData());
 					ackNumber = ackBuffer.getInt();
 					if(ackNumber != LAR + 1){
-						i = LAR + 1;
-						Thread.sleep(1);
+						i = LAR;
+						Thread.sleep(10);
 					}else{
 						LAR = ackNumber;
 					}
 				}catch(SocketTimeoutException e){
-					i = LAR + 1;
-					Thread.sleep(1);
+					i = LAR;
+					Thread.sleep(10);
 				}
 				
 			}

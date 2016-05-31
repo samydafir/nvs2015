@@ -61,9 +61,6 @@ public class Receiver {
 		//get expected amount  of packets
         int expec = Integer.parseInt(args[2]);
         
-        //Variables used for ACK
-        ByteBuffer ackBuffer = ByteBuffer.allocate(4);
-
         CRC32 checksum = new CRC32();
 		int packetCount = 0;
 		try{
@@ -73,7 +70,7 @@ public class Receiver {
 			//set socket-timeout to terminate following loop, if no more packets received
 			socket.setSoTimeout(Integer.parseInt(args[1]));
 			
-			//get Sender-sddress and port
+			//get Sender-address and port
 			ackAddress = packet.getAddress();
 			ackPort = packet.getPort();
 			sendAck(packet, socket);
