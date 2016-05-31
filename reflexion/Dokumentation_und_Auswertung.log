@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9) (preloaded format=pdflatex 2016.3.12)  27 APR 2016 20:09
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9) (preloaded format=pdflatex 2016.3.12)  31 MAY 2016 18:24
 entering extended mode
 **./Dokumentation_und_Auswertung.tex
 (Dokumentation_und_Auswertung.tex
@@ -393,24 +393,101 @@ Underfull \hbox (badness 10000) in paragraph at lines 184--187
 
 [16 <./images_ass2/java2c1.png> <./images_ass2/java2c2.png>] [17 <./images_ass2
 /c2java1.png>] [18 <./images_ass2/c2java2.png>]
-(Dokumentation_und_Auswertung.aux) ) 
+Underfull \hbox (badness 10000) in paragraph at lines 200--201
+
+ []
+
+[19]
+Overfull \hbox (15.13815pt too wide) in paragraph at lines 209--214
+\OT1/cmr/bx/n/12 Empf[]anger: \OT1/cmr/m/n/12 Im Empf[]anger wur-de be-reits fr
+[]uher ein struct vom Typ $\OML/cmm/m/it/12 sockaddr[]n$
+ []
+
+[20] <images_ass3/java_java_1000.png, id=81, 683.55376pt x 470.50781pt>
+File: images_ass3/java_java_1000.png Graphic file (type png)
+
+<use images_ass3/java_java_1000.png>
+Package pdftex.def Info: images_ass3/java_java_1000.png used on input line 219.
+
+(pdftex.def)             Requested size: 398.33858pt x 274.19418pt.
+
+<images_ass3/java_java_100000.png, id=83, 661.72218pt x 478.03593pt>
+File: images_ass3/java_java_100000.png Graphic file (type png)
+
+<use images_ass3/java_java_100000.png>
+Package pdftex.def Info: images_ass3/java_java_100000.png used on input line 22
+2.
+(pdftex.def)             Requested size: 398.33858pt x 287.76472pt.
+
+Overfull \hbox (8.33858pt too wide) in paragraph at lines 219--227
+[] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 219--227
+
+ []
+
+
+Overfull \hbox (8.33858pt too wide) in paragraph at lines 219--227
+[] 
+ []
+
+
+Overfull \hbox (9.6403pt too wide) in paragraph at lines 219--227
+\OT1/cmr/m/n/12 Ansonsten zeigt die Java-Version ein lo-ga-rith-mi-sches Ver-ha
+l-ten in Abh[]angigkeit
+ []
+
+[21 <./images_ass3/java_java_1000.png>]
+<images_ass3/c_c_1000.png, id=88, 682.80093pt x 448.67625pt>
+File: images_ass3/c_c_1000.png Graphic file (type png)
+
+<use images_ass3/c_c_1000.png>
+Package pdftex.def Info: images_ass3/c_c_1000.png used on input line 229.
+(pdftex.def)             Requested size: 398.33858pt x 261.75911pt.
+
+<images_ass3/c_c_100000.png, id=89, 686.565pt x 446.41782pt>
+File: images_ass3/c_c_100000.png Graphic file (type png)
+
+<use images_ass3/c_c_100000.png>
+Package pdftex.def Info: images_ass3/c_c_100000.png used on input line 232.
+(pdftex.def)             Requested size: 398.33858pt x 259.00424pt.
+
+Overfull \hbox (8.33858pt too wide) in paragraph at lines 229--234
+[] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 229--234
+
+ []
+
+
+Overfull \hbox (8.33858pt too wide) in paragraph at lines 229--234
+[]
+ []
+
+[22 <./images_ass3/java_java_100000.png>] [23 <./images_ass3/c_c_1000.png> <./i
+mages_ass3/c_c_100000.png>] [24] (Dokumentation_und_Auswertung.aux) ) 
 Here is how much of TeX's memory you used:
- 2974 strings out of 493622
- 39639 string characters out of 3143647
+ 2997 strings out of 493622
+ 40269 string characters out of 3143647
  106371 words of memory out of 3000000
- 6308 multiletter control sequences out of 15000+200000
+ 6326 multiletter control sequences out of 15000+200000
  12403 words of font info for 48 fonts, out of 3000000 for 9000
  1025 hyphenation exceptions out of 8191
- 38i,6n,24p,923b,235s stack positions out of 5000i,500n,10000p,200000b,50000s
-<E:/Program Files/MiKTeX 2.9/fonts/type1/pu
-blic/amsfonts/cm/cmbx12.pfb><E:/Program Files/MiKTeX 2.9/fonts/type1/public/ams
-fonts/cm/cmmi12.pfb><E:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm
-/cmmi8.pfb><E:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr12.pf
-b><E:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr17.pfb><E:/Pro
-gram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
-Output written on Dokumentation_und_Auswertung.pdf (18 pages, 275742 bytes).
+ 38i,6n,24p,1168b,235s stack positions out of 5000i,500n,10000p,200000b,50000s
+<E:/Progra
+m Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx12.pfb><E:/Program Files/
+MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi12.pfb><E:/Program Files/MiKTeX 2
+.9/fonts/type1/public/amsfonts/cm/cmmi8.pfb><E:/Program Files/MiKTeX 2.9/fonts/
+type1/public/amsfonts/cm/cmr12.pfb><E:/Program Files/MiKTeX 2.9/fonts/type1/pub
+lic/amsfonts/cm/cmr17.pfb><E:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfo
+nts/cm/cmsy10.pfb>
+Output written on Dokumentation_und_Auswertung.pdf (24 pages, 361530 bytes).
 PDF statistics:
- 94 PDF objects out of 1000 (max. 8388607)
+ 122 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 51 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 71 words of extra memory for PDF output out of 10000 (max. 10000000)
 

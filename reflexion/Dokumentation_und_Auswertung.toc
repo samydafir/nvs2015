@@ -1,6 +1,6 @@
 \select@language {ngerman}
 \contentsline {section}{\numberline {1}Aufgabe 1}{3}
-\contentsline {section}{\numberline {2}Dokumentation (Java-Version), Abgabe 1}{3}
+\contentsline {section}{\numberline {2}Dokumentation (Java-Version), Aufgabe 1}{3}
 \contentsline {subsection}{\numberline {2.1}Funktion allgemein}{3}
 \contentsline {subsection}{\numberline {2.2}Empf\"anger}{3}
 \contentsline {subsubsection}{\numberline {2.2.1}Socket erstellen}{4}
@@ -13,7 +13,7 @@
 \contentsline {subsubsection}{\numberline {2.3.4}Nachricht erstellen}{5}
 \contentsline {subsubsection}{\numberline {2.3.5}Pakete erstellen und senden}{5}
 \contentsline {subsection}{\numberline {2.4}Zeitmessung und zus\"atzliche Parameter}{6}
-\contentsline {section}{\numberline {3}Dokumentation (C-Version), Abgabe 1}{7}
+\contentsline {section}{\numberline {3}Dokumentation (C-Version), Aufgabe 1}{7}
 \contentsline {subsection}{\numberline {3.1}Funktion allgemein}{7}
 \contentsline {subsection}{\numberline {3.2}Sender}{7}
 \contentsline {subsubsection}{\numberline {3.2.1}Socket erstellen}{8}
@@ -26,16 +26,24 @@
 \contentsline {subsubsection}{\numberline {3.3.3}Socket mit Adressen-Objekt mittels bind verbinden}{9}
 \contentsline {subsubsection}{\numberline {3.3.4}Timeout festlegen und Pakete mit recvfrom empfangen}{9}
 \contentsline {subsection}{\numberline {3.4}Auswertung}{9}
-\contentsline {section}{\numberline {4}Auswertung, Abgabe 1}{10}
+\contentsline {section}{\numberline {4}Auswertung, Aufgabe 1}{10}
 \contentsline {subsection}{\numberline {4.1}C-Version}{10}
 \contentsline {subsection}{\numberline {4.2}Java-Version}{11}
 \contentsline {subsection}{\numberline {4.3}Zus\"atzliche Bemerkungen}{11}
 \contentsline {section}{\numberline {5}Aufgabe 2}{11}
-\contentsline {section}{\numberline {6}\"Anderungen, Abgabe 2}{12}
+\contentsline {section}{\numberline {6}\"Anderungen, Aufgabe 2}{12}
 \contentsline {subsection}{\numberline {6.1}Java}{12}
 \contentsline {subsection}{\numberline {6.2}C}{12}
-\contentsline {section}{\numberline {7}Auswertung, Abgabe 2}{13}
+\contentsline {section}{\numberline {7}Auswertung, Aufgabe 2}{13}
 \contentsline {subsection}{\numberline {7.1}Java-Java}{13}
 \contentsline {subsection}{\numberline {7.2}C-C}{14}
 \contentsline {subsection}{\numberline {7.3}Java-C}{15}
 \contentsline {subsection}{\numberline {7.4}C-Java}{17}
+\contentsline {section}{\numberline {8}Aufgabe 3}{19}
+\contentsline {section}{\numberline {9}Funktionsweise Schiebefenster}{19}
+\contentsline {section}{\numberline {10}\"Anderungen, Aufgabe 3}{19}
+\contentsline {subsection}{\numberline {10.1}Java}{19}
+\contentsline {subsection}{\numberline {10.2}C}{20}
+\contentsline {section}{\numberline {11}Auswertung, Aufgabe 3}{21}
+\contentsline {subsection}{\numberline {11.1}Java-Java}{21}
+\contentsline {subsection}{\numberline {11.2}C-C}{23}

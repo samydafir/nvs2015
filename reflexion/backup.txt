@@ -202,36 +202,20 @@
 	\textbf{Sender:} Auf der Sender-Seite muss etwas mehr verändert werden. Der Sender verwaltet eine Variable $windowSize$, die die Größe des Schiebefensters angibt und auch als cmd-Parameter eingegeben werden kann. Das letzte erhaltene ACK wird in der Variable $LAR$ festgehalten.\\
 	Nach jedem gesendeten Paket wird jetzt überprüft, ob das Schiebefenster schon voll ist, also ob das letzte gesendete Paket die Sequenznummer $LAR + windowSize$ hatte. Ist dies der Fall wird nun auf eine Bestätigung gewartet. Das ACK-Paket sollte optimalerweise die Sequenznummer des ersten Pakets im Schiebefenster enthalten.
 	Wird die richtige Sequenznummer erhalten, sendet der Sender das Nächste Paket $\rightarrow$ das Fenster rückt um eine Position weiter.\\
-	Erhält der Sender jetzt ein ACK mit einer falschen Sequenznummer, verwirft er das Fenster. In unserem Fall wird einfach der Schleifenzähler auf $LAR$ (danach von Schleife erhöht) gesetzt und alle Pakete im Fenster noch einmal gesendet.
-	Es kann außerdem vorkommen, dass überhaupt kein ACK erhalten und damit ein gewisses Empfangs-Timeout überschritten wird. In diesem Fall gilt das gleiche: Fenster verwerfen, Schleifenzähler auf auf $LAR$ setzen und Pakete erneut senden. Hier musste zusätzlich ein kurzes $sleep$ eingebaut werden. Angenommen es wird ein falsches oder kein ACK erhalten. Dann würde der Sender den Schleifenzähler zurücksetzen und direkt beginnen zu senden. Jetzt würde der Sender ein ACK erwarten, dass die Sequenznummer des ersten gesendeten Pakets enthält. Hier kann es aber nun vorkommen, dass noch ein ACK vom vorherigen Sendevorgang unterwegs ist und empfangen wird. Das würde der Sender jetzt als ein falsches ACK identifizieren und den Sendevorgang gleich wieder wiederholen. Dies führt zu einer unendlichen Schleife, in der der Sender immer wieder den gleichen Abschnitt sendet und nicht mehr weiter kommt. Um das zu verhindern wurde ein kurzes $sleep$ eingebaut, das dafür sorgt, dass der Sender nachdem ein falsche Paket oder ein Timeout erkannt wurde kurz wartet bis die restlichen ACKs die "Leitung" verlassen haben.
+	Erhält der Sender jetzt ein ACK mit einer falschen Sequenznummer, verwirft er das Fenster. In unserem Fall wird einfach der Schleifenzähler auf $LAR + 1$ gesetzt und alle Pakete im Fenster noch einmal gesendet.
+	Es kann außerdem vorkommen, dass überhaupt kein ACK erhalten und damit ein gewisses Empfangs-Timeout überschritten wird. In diesem Fall gilt das gleiche: Fenster verwerfen, Schleifenzähler auf auf $LAR + 1$ setzen und Pakete erneut senden. Hier musste zusätzlich ein kurzes $sleep$ eingebaut werden. Angenommen es wird ein falsches oder kein ACK erhalten. Dann würde der Sender den Schleifenzähler zurücksetzen und direkt beginnen zu senden. Jetzt würde der Sender ein ACK erwarten, dass die Sequenznummer des ersten gesendeten Pakets enthält. Hier kann es aber nun vorkommen, dass noch ein ACK vom vorherigen Sendevorgang unterwegs ist und empfangen wird. Das würde der Sender jetzt als ein falsches ACK identifizieren und den Sendevorgang gleich wieder wiederholen. Dies führt zu einer unendlichen Schleife, in der der Sender immer wieder den gleichen Abschnitt sendet und nicht mehr weiter kommt. Um das zu verhindern wurde ein kurzes $sleep$ eingebaut, das dafür sorgt, dass der Sender nachdem ein falsche Paket oder ein Timeout erkannt wurde kurz wartet bis die restlichen ACKs die "Leitung" verlassen haben.
 	
 	\subsection{C}
 	In der C-Version wurden praktisch die gleichen Änderungen vorgenommen, wie in der Java-Version, nur ist es etwas komplizierter diese Änderungen vorzunehmen.
-	\\
 	\textbf{Empfänger:} Im Empfänger wurde bereits früher ein struct vom Typ $sockaddr_in$ erstellt, der nach jedem Empfang eines Pakets die Sender-Informationen enthält. Nun wird aus jedem empfangenen Paket, das hier als int-Array repräsentiert ist die Sequenznummer extrahiert, also $array[0]$ gelesen, in ein neues Array der Länge 1 und damit in ein neues Paket verpackt. Anschließend wird dieses neue Paket an den Sender zurückgeschickt.
-	\\
-	\textbf{Sender:} Der Sender agiert exakt gleich wie der Java-Sender. Es wird gesendet bis das Schiebefenster voll ist, dann wird auf ein ACK gewartet. Ist dieses ACK die Bestätigung des ersten Pakets im Fenster, wird fortgesetzt $\rightarrow$ ein weiteres Paket gesendet. Wird kein oder das falsche ACK erhalten, wird auch hier der Fensterinhalt verworfen und der Schleifenzähler auf $LAR$  gesetzt (danach von Schleife erhöht) $\rightarrow$ alle Pakete im Fenster werden erneut gesendet.
+	\textbf{Sender:} Der Sender agiert exakt gleich wie der Java-Sender. Es wird gesendet bis das Schiebefenster voll ist, dann wird auf ein ACK gewartet. Ist dieses ACK die Bestätigung des ersten Pakets im Fenster, wird fortgesetzt $\rightarrow$ ein weiteres Paket gesendet. Wird kein oder das falsche ACK erhalten, wird auch hier der Fensterinhalt verworfen und der Schleifenzähler auf $LAR + 1$ gesetzt $\rightarrow$ alle Pakete im Fenster werden erneut gesendet.
 	
 	
 	\section{Auswertung, Aufgabe 3}
-	
-	\subsection{Java-Java}
 	\includegraphics[width=14cm]{images_ass3/java_java_1000.png}
 	\\
 	\\
 	\includegraphics[width=14cm]{images_ass3/java_java_100000.png}
-	\\
-	Hier wurden jeweils 1000 und 100000 Pakete mit einer Paketgröße von 1400 Byte über localhost gesendet und die Übertragungsgeschwindigkeit in Abhängigkeit von der Größe des Sliding-Window gemessen.
-	Es fällt auf, dass beim Übergang von Fenstergröße 1 zu Fenstergröße 2 ein enormer Sprung auftritt. Das ist dadurch zu erklären, dass bei Größe 1 immer auf ein ACK für das gerade gesendete Paket gewartet wird (entspricht dem Stop-and-Wait Verfahren). Sobald mehr als 1 Paket ins Fenster passt, werden mehr Pakete gesendet, bevor auf eine Antwort gewartet wird. Es sind also mehrere Pakete gleichzeitig unterwegs, was die Leitungskapazität viel besser ausnutzt.\\
-	Ansonsten zeigt die Java-Version ein logarithmisches Verhalten in Abhängigkeit von der Fenstergröße. Ungefähr bis zur Fenstergröße 5 lässt sich ein Anstieg messen, danach bleiben die Geschwindigkeit nahezu konstant. Dies könnte durch die kurze roundtrip-time beim Senden über localhost erklärt werden: die Kapazität ist schon beim Senden von wenigen Paketen erreicht, weitere Erhöhung der Fenstergröße bringt nichts. Andererseits könnte es sich auch um eine Beschränkung durch Java handeln, da dieses logarithmische Verhalten bei der C-Version nicht auftritt.
-	
-	\subsection{C-C}
-	\includegraphics[width=14cm]{images_ass3/c_c_1000.png}
-	\\
-	\\
-	\includegraphics[width=14cm]{images_ass3/c_c_100000.png}
-	Die C-Version wurde auf gleiche Art und Weise ausgewertet, wie die Java-Version. Hier fällt auf, dass der Geschwindigkeitszuwachs sehr linear ausfällt und keine Sättigungseffekte auftreten $\rightarrow$ die Geschwindigkeit steigt immer weiter linear an und ist generell viel höher als in der Java-Version (evtl. unrealistisch?).
-	
 	
 	
 \end{document}
