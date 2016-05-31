@@ -91,17 +91,18 @@ int main(int argc, char *argv[]){
         }
       /*handle acks, go-back-n if either ack not expected ack or no ack received for
       first packet in sliding window */
-      if(amt_sent == LAR + window_size && recvfrom(sock,ack_buffer,sizeof(ack_buffer),0,(struct sockaddr*)&sender,&sockaddr_len) >= 0){
-        printf("%d\n", ntohl(ack_buffer[0]));
-          if(ntohl(ack_buffer[0]) == LAR + 1){
-            LAR = ntohl(ack_buffer[0]);
+      if(amt_sent == LAR + window_size){
+          if(recvfrom(sock,ack_buffer,sizeof(ack_buffer),0,(struct sockaddr*)&sender,&sockaddr_len) >= 0){
+              if(ntohl(ack_buffer[0]) == LAR + 1){
+                  LAR = ntohl(ack_buffer[0]);
+              }else{
+                amt_sent = LAR + 1;
+                usleep(1000);
+              }
           }else{
             amt_sent = LAR + 1;
             usleep(1000);
           }
-      }else{
-        amt_sent = LAR + 1;
-        usleep(1000);
       }
     }
     gettimeofday(&after, NULL);

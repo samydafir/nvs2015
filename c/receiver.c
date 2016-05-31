@@ -69,9 +69,8 @@ int main(int argc, char *argv[]){
         crc = crc32(crc, (const void*)buffer, total_pack_size);
         rec_cnt++;
         ack_buffer[0] = buffer[0];
-        printf("%d\n", ntohl(ack_buffer[0]));
         sendto(sock, ack_buffer, sizeof(ack_buffer), 0, (struct sockaddr *)&sender, sizeof(struct sockaddr_in));
-        LAS++;
+        LAS = ntohl(ack_buffer[0]);
     }
 
     /*set after first receive such that the receiver waits for the first packet
@@ -91,13 +90,8 @@ int main(int argc, char *argv[]){
         }
         gettimeofday(&after, NULL);
         ack_buffer[0] = buffer[0];
-        printf("%d\n", ntohl(ack_buffer[0]));
         sendto(sock, ack_buffer, sizeof(ack_buffer), 0, (struct sockaddr *)&sender, sizeof(struct sockaddr_in));
         LAS = ntohl(ack_buffer[0]);
-    }
-    //timestamp is only refreshed if all packets were received
-    if(rec_cnt == pack_exp){
-        gettimeofday(&after, NULL);
     }
     evaluate(before, after, total_pack_size, rec_cnt,crc);
     close(sock);
@@ -107,7 +101,7 @@ int main(int argc, char *argv[]){
 evaluates the receive-operation. calculates transfer-speed and prints it.
 */
 void evaluate(struct timeval before, struct timeval after, int msg_size, int amt, uint crc){
-    time_t duration = (after.tv_usec - before.tv_usec) +(after.tv_sec - before.tv_sec)*1000000;
+    time_t duration = (after.tv_usec - before.tv_usec) + (after.tv_sec - before.tv_sec)*1000000;
     int total_size = msg_size * 4 * amt;
     printf("crc32-checksum: %u\n", crc);
     printf("%d packets received\n", amt);
