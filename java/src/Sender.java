@@ -61,7 +61,7 @@ public class Sender {
 		//create socket with standard constructor. Sender-port does not have to be known.
 		DatagramSocket socket = new DatagramSocket();
 		//set timeout for ACK-reception
-		socket.setSoTimeout(10);
+		socket.setSoTimeout(100);
 
 		//transform the cmd-argument receiver-name into an InetAddress object.
 		CRC32 checksum = new CRC32();
@@ -82,7 +82,6 @@ public class Sender {
 		beforeTime = System.currentTimeMillis();
 		int ackNumber;
 		for(int i = 0; i < sendAmt; i++){
-			System.out.println("##########" + i);
 			buffer.putInt(i);
 			/*If current packet is not the last packet: put the whole message into the bytebuffer and use it
 			 * to update the checksum. Otherwise: put message up to length - 4 into the buffer, to leave space
@@ -103,12 +102,14 @@ public class Sender {
 					ackBuffer = ByteBuffer.wrap(ackPacket.getData());
 					ackNumber = ackBuffer.getInt();
 					if(ackNumber != LAR + 1){
+						System.out.println(i + " wrong packet " + ackNumber + " " + LAR);
 						i = LAR;
 						Thread.sleep(10);
 					}else{
 						LAR = ackNumber;
 					}
 				}catch(SocketTimeoutException e){
+					System.out.println("timeout");
 					i = LAR;
 					Thread.sleep(10);
 				}
