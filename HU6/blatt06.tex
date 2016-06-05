@@ -1,0 +1,87 @@
+\documentclass[12pt, a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman]{babel}
+\usepackage{csquotes}
+\usepackage{pdfpages}
+\usepackage{graphicx}
+\usepackage{verbatim}
+\title{Übungsblatt 6}
+\author{Thomas Samy Dafir}
+\date{}
+
+\begin{document}
+	
+\section*{30}
+
+\section*{31}
+
+\section*{32}
+	SNMP: SimpleNetwork Management Protocol. OSI-Layer 7 (Application).
+	Wird verwendet, um Geräte im Netzwerk von einem Zentralen Management-Rechner aus zu überwachen.
+	Zugriff auf sämtliche Hardwareinformationen der überwachten Geräte.
+	\begin{itemize}
+		\item Überwachte Geräte senden auf Aufforderung Nachrichten an Management Rechner
+		\item Aktion des Management Rechners von Regeln in der Management Software abhängig
+		\item Auf jedem überwachten Gerät läuft ein "Agent" (Soft- oder Hardware), der Informationen vom Gerät liest auf Anfrage (GET) an den Management Rechner sendet (RESPONSE)
+		\item TRAP: bestimmte Regel überschritten $\rightarrow$ Nachricht (TRAP) an Management Rechner gesendet
+	\end{itemize}
+	\textbf{MIB}:\\
+	Management Information Base: Datenbank, die Angibt, welche Informationen des überwachten Rechners vom SNMP-Manager überwacht/gelesen werden kann. das MIB speichert eine Menge von Variablen, die angeben, auf welche Informationen über SNMP zugegriffen werden darf/kann.
+	\\
+	\\
+	\textbf{ASN.1}\\
+	ASN.1 ist eine normierte Beschreibungssprache, die verwendet wird, um Inhalte in SNMP Paketen zu beschreiben. Ein SNMP Paket sieht folgendermaßen aus:\\
+	\includegraphics[width = \textwidth]{snmp_header.png}
+	\\
+	Im Packet Header werden SNMP-Version sowie ein Community-Name übertragen. In der Version 1 und 2c werden Community Namen zur Zugriffskontrolle verwendet (z.B. public für Lesezugriff). Community Namen werden jedoch im Klartext übers Netzwerk übertragen $\rightarrow$ sehr unsicher.\\
+	Der PDU-Header (Protocol Data Unit header) enthält die Art der Anfrage (z.B. GET, RESPONSE,...), sowie eine RequestID, die in Anfrage und Antwort ident sein sollte, um diese einander zuzuordnen.
+	Zusätzlich sind Fehlerinformationen enthalten (wenn Anfrage nicht bearbeitet werden konnte).
+	Im Body wird schlussendlich die Nutzinformation übertragen. Hier kommt ASN.1 zum Einsatz. Wie im ASN.1 Standard vorgegeben werden die zu übertragenden Werte immer als Tripel (Type-Length-Value) repräsentiert. Type ist der Datentyp (Integer, Boolean,...), Length ist die Länge des zu übertragenden Datenfelds und Value repräsentiert den zu übertragenden Wert selbst.
+	\\
+	\textbf{Interaktionen}\\
+	Der Management Rechner sendet GET Anfragen an die Agents auf den zu überwachenden Rechnern. Diese können dann Daten auslesen, die im MIB angegeben sind. Diese Daten werden dann als Type-Length-Value-Tripel in Pakete verpackt und in einer RESPONSE an den SNMP Manager zurückgesendet. Dieser kann dann entscheiden, wie mit der Information umgegangen wird.\\
+	Eine weitere Möglichkeit der Interaktion sind TRAP Pakete. Mit Überwachungsprogrammen, die SNMP verwenden können Regeln festgelegt werden, bei deren Übertretung jeder Agent sofort eine Meldung an den SNMP Manager sendet. Dieser kann wieder entsprechend reagieren.
+	
+
+
+\section*{33}
+	Anklickbares Bild durch einbetten in $<a>$ Block $\rightarrow$ Bild als Link z.B:
+	\begin{verbatim}
+		Bild(nicht anklickbar):
+		<img src = "images/test.png">
+		Bild (anklickbar, link):
+		<a href = "destination.html"><img src = "images/test.png"></a>
+	\end{verbatim}
+	
+		
+\section*{34}
+	Meist wird für ftp Übertragungen ein ftp Client Programm verwendet. Wenn der ftp-Server es erlaubt, kann aber auch
+	mittels einer URL, die bereits Benutzernamen und Passwort enthält über jeden gängigen Browser zugegriffen werden.
+	Diese URL ist folgendermaßen aufgebaut:\\
+	$ftp://benutzername:passwort@host:port/pfad$\\
+	In unserem Fall sieht die URL also so aus:\\
+	$ftp://user:gesK@ftp.example.com:2020/var/ftp/pub/test/meinedatei$
+	
+\section*{35}
+	Folgende Felder muss jeder HTTP Response Header enthalten:
+	\begin{itemize}
+		\item Protokoll: hier also HTTP/1.x
+		\item Status Code z.B. 200 OK oder 404
+	\end{itemize}
+	Zusätzlich können noch weitere Informationen gesendet werden:
+	\begin{itemize}
+		\item Content-Type: MIME type des gesendeten Dokuments
+		\item Date
+		\item Cache-Control: Darf gecached werden? Time to live
+		\item Content-Length
+		\item Content-Disposition: soll das File geparsed oder direkt heruntergeladen werden?
+		\item uvm.
+	\end{itemize}
+	In unserem Fall wird nur nur $Content-Type: text/html;$ benötigt, damit der Browser weiß, dass es sich um ein HTML-Dokument handelt.
+	
+
+
+
+
+
+\end{document}
