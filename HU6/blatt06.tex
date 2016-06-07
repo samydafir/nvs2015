@@ -12,6 +12,24 @@
 \begin{document}
 	
 \section*{30}
+\textbf{Traffic Shaping:}
+Warteschlangenverwaltung bei paketvermitteln Datennetzen.  Datenpakete werden nach bestimmten Kriterien verzögert oder verworfen um bestimmten Anforderungsprofilen zu genügen. Das wird mit einem Netzwerk-Scheduler  (Form von Datenabgrenzung) durchgeführt. 
+Der einfachste Mechanismus ist die Priorisierung und Ack-Paketen.
+
+
+\textbf{Leaky Bucket:}
+Der Leaky Bucket Algorithmus wird zum Beispiel bei  Traffic Shaping verwendet. So wird die Menge der übertragenen Daten geregelt und die maximale Datenrate begrenzt. 
+Man kann sich das wie einen undichten Eimer vorstellen, wenn er voll ist kommen durch die  undichten Stellen regelmäßig Daten. Wenn man versucht, den schon vollen Eimer weiterzufüllen, werden die Daten einfach verworfen. 
+
+
+\textbf{Token Bucket:}
+Hier enthält unser undichter Eimer Token, alle n Sekunden wird ein neues Token erzeugt. Ein Paket wird übertragen indem der Token erfasst und zerstört wird.  Der Token Bucket Algorithmus lässt nur eine Ansammlung bis zur Höhe des Eimers zu. Der Token Bucket Algorithmus verwirft auch keine Daten sondern nur Token. Ein Paket kann nur übertragen werden um die Länge in Bytes abzudecken.  Angebrochene Token werden zur späteren Verwendung aufgehoben. 
+
+
+\textbf{Hierachical Token Bucket:}
+Dies ermöglicht eine physikalische Leitung in mehrerer virtueller Leitungen und den Verkehr laut Token Bucket auf diese Verbindung aufzuteilen. 
+Dies ist nützlich um Bandbreitenbegrenzungen auf Programme anzuwenden.
+
 
 \section*{31}
 
