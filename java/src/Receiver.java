@@ -77,7 +77,7 @@ public class Receiver {
 			checksum.update(packet.getData());
 			beforeTime = System.currentTimeMillis();
 			packetCount++;
-			while(true){
+			while(LAS < expec){
 				socket.receive(packet);
 				sendAck(packet, socket);
 				afterTime = System.currentTimeMillis();
