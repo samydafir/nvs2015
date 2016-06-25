@@ -96,12 +96,10 @@ int main(int argc, char *argv[]){
               if(ntohl(ack_buffer[0]) == LAR + 1){
                   LAR = ntohl(ack_buffer[0]);
               }else{
-                amt_sent = LAR + 1;
-                usleep(1000);
+                amt_sent = LAR;
               }
           }else{
-            amt_sent = LAR + 1;
-            usleep(1000);
+            amt_sent = LAR;
           }
       }
     }
@@ -115,7 +113,7 @@ evaluates the send-operation. calculates transfer-speed and prints it.
 */
 void evaluate(struct timeval before, struct timeval after, int msg_size, int amt, uint crc){
     time_t duration = (after.tv_usec - before.tv_usec) +(after.tv_sec - before.tv_sec)*1000000;
-    int total_size = msg_size * amt * 4;
+    long total_size = msg_size * amt * 4;
     printf("crc32-checksum: %u\n", crc);
     printf("%d packets sent\n", amt);
     if(duration != 0.0){

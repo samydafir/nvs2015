@@ -93,17 +93,18 @@ int main(int argc, char *argv[]){
         sendto(sock, ack_buffer, sizeof(ack_buffer), 0, (struct sockaddr *)&sender, sizeof(struct sockaddr_in));
         LAS = ntohl(ack_buffer[0]);
     }
-    evaluate(before, after, total_pack_size, rec_cnt,crc);
+    evaluate(before, after, total_pack_size, rec_cnt, pack_exp, crc);
     close(sock);
 }
 
 /*
 evaluates the receive-operation. calculates transfer-speed and prints it.
 */
-void evaluate(struct timeval before, struct timeval after, int msg_size, int amt, uint crc){
+void evaluate(struct timeval before, struct timeval after, int msg_size, int amt, int expected, uint crc){
     time_t duration = (after.tv_usec - before.tv_usec) + (after.tv_sec - before.tv_sec)*1000000;
-    int total_size = msg_size * 4 * amt;
+    long total_size = msg_size * 4 * amt;
     printf("crc32-checksum: %u\n", crc);
+    printf("%d packets expected\n", expected);
     printf("%d packets received\n", amt);
     if(duration != 0.0){
         double speed = 8 * total_size/duration;
