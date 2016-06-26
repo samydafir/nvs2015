@@ -10,7 +10,6 @@ gcc -o receiver receiver.c -lz
 #include <sys/time.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-#include <time.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -92,7 +91,7 @@ int main(int argc, char *argv[]){
         ack_buffer[0] = buffer[0];
         sendto(sock, ack_buffer, sizeof(ack_buffer), 0, (struct sockaddr *)&sender, sizeof(struct sockaddr_in));
         LAS = ntohl(ack_buffer[0]);
-    }
+      }
     evaluate(before, after, total_pack_size, rec_cnt, pack_exp, crc);
     close(sock);
 }
