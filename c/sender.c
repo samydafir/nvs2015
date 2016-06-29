@@ -28,7 +28,7 @@ int main(int argc, char *argv[]){
 
     //declare and define required local vars
     int LAR;
-    int sock, amt_send, amt_sent, sent, total_pack_size, payload, sockaddr_len, i;
+    int sock, amt_send, amt_sent, sent, total_pack_size, payload, sockaddr_len, i, ack_rec;
     struct sockaddr_in receiver, sender;
     struct hostent *host;
     struct timeval before, after;
@@ -92,16 +92,19 @@ int main(int argc, char *argv[]){
       /*handle acks, go-back-n if either ack not expected ack or no ack received for
       first packet in sliding window */
       if(amt_sent == LAR + window_size){
-          if(recvfrom(sock,ack_buffer,sizeof(ack_buffer),0,(struct sockaddr*)&sender,&sockaddr_len) >= 0){
+          ack_rec = recvfrom(sock,ack_buffer,sizeof(ack_buffer),0,(struct sockaddr*)&sender,&sockaddr_len);
+          //in case of retransmission: ignore acks sent by the receiver before go-back-n was invoked
+          while(ntohl(ack_buffer[0]) < LAR + 1){
+            ack_rec = recvfrom(sock,ack_buffer,sizeof(ack_buffer),0,(struct sockaddr*)&sender,&sockaddr_len);
+          }
+          if(ack_rec >= 0){
               if(ntohl(ack_buffer[0]) == LAR + 1){
                   LAR = ntohl(ack_buffer[0]);
               }else{
-                amt_sent = LAR + 1;
-                usleep(1000);
+                amt_sent = LAR;
               }
           }else{
-            amt_sent = LAR + 1;
-            usleep(1000);
+            amt_sent = LAR;
           }
       }
     }
@@ -115,7 +118,7 @@ evaluates the send-operation. calculates transfer-speed and prints it.
 */
 void evaluate(struct timeval before, struct timeval after, int msg_size, int amt, uint crc){
     time_t duration = (after.tv_usec - before.tv_usec) +(after.tv_sec - before.tv_sec)*1000000;
-    int total_size = msg_size * amt * 4;
+    long total_size = msg_size * amt * 4;
     printf("crc32-checksum: %u\n", crc);
     printf("%d packets sent\n", amt);
     if(duration != 0.0){
