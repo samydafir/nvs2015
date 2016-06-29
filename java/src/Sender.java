@@ -98,7 +98,7 @@ public class Sender {
 			socket.send(sendPacket);
 			if(i == LAR + windowSize){
 				try{
-					while(ackNumber < LAR){
+					while(ackNumber < LAR + 1){
 						socket.receive(ackPacket);
 						ackBuffer = ByteBuffer.wrap(ackPacket.getData());
 						ackNumber = ackBuffer.getInt();
